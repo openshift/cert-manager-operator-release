@@ -6,7 +6,7 @@ FROM registry.redhat.io/openshift4/ose-operator-registry-rhel9:v4.17 AS builder
 # For image builds through konflux, konflux-bot will update the references.
 ARG CERT_MANAGER_OPERATOR_IMAGE=registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:1791daa2b55065f5dd42aa9213d68e613baf59976be8bab2e68c5c5b15ca7aed \
     CERT_MANAGER_OPERATOR_BUNDLE_IMAGE=registry.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:163c2b224a662f2f4d6119939460049dce9fb7f3fbbdce28a65acfa78a1a8c8c \
-    CERT_MANAGER_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:8e8b02f2e9b83e43ecadf030ff9e98525af523e6f0e50a23dfd8f5ecd59d6c29 \
+    CERT_MANAGER_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:16bed0b85bcd40c55072b322a9b177c8ab46bf68dbd6d204b19d7b5b99a39fc6 \
     CERT_MANAGER_ACMESOLVER_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:698fcc75fadc6723152b94e8618c32ca9cef5af81fbeb328b536e2a262927637 \
     KUBE_RBAC_PROXY_IMAGE=registry.redhat.io/openshift4/ose-kube-rbac-proxy-rhel9@sha256:6fbeaf03058bb5d6e9e3311a7afe67666e0770532c978b6b57e77ea2851cb085
 
