@@ -9,7 +9,7 @@ COPY --chmod=0550 hack/bundle/render_templates.sh /render_templates.sh
 # Below image versions are used for replacing the image references in the operator CSV.
 # For image builds through konflux, konflux-bot will update the references.
 
-ARG CERT_MANAGER_OPERATOR_IMAGE=registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:bbf2fbcaa5751108a6babc0a74c509d35324994f7414f9293b9d8e6773404007 \
+ARG CERT_MANAGER_OPERATOR_IMAGE=registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:2b07abbf7cb661805f5c48b0f394de13dcf7be184e33ca7e6f182a93b482290a \
     CERT_MANAGER_WEBHOOK_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:db40bfc8705ae82bbc38fbef95e0092891534dedd3ba903807399848decb94f5 \
     CERT_MANAGER_CA_INJECTOR_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:db40bfc8705ae82bbc38fbef95e0092891534dedd3ba903807399848decb94f5 \
     CERT_MANAGER_CONTROLLER_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:db40bfc8705ae82bbc38fbef95e0092891534dedd3ba903807399848decb94f5 \
