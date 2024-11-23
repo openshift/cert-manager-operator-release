@@ -253,7 +253,7 @@ properties:
       capabilities: Seamless Upgrades
       categories: Security
       console.openshift.io/disable-operand-delete: "true"
-      containerImage: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:2df1899f8c9f877cb9e1239b860f34c0e7a27d72d87b561fa79a5d7319699d59
+      containerImage: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:38a4fe3f2a096ccd3e42973517e94212d8ac39bf1c38992f7f90cb1c2c0fed8c
       createdAt: 2024-06-20T08:28:48
       features.operators.openshift.io/disconnected: "false"
       features.operators.openshift.io/fips-compliant: "true"
@@ -343,9 +343,9 @@ properties:
 relatedImages:
 - image: registry.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:92339bb4cfeaa527bd5d68065f58001e05ff3c05af3416e8e1f9dc60734784d3
   name: ""
-- image: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:2df1899f8c9f877cb9e1239b860f34c0e7a27d72d87b561fa79a5d7319699d59
+- image: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:38a4fe3f2a096ccd3e42973517e94212d8ac39bf1c38992f7f90cb1c2c0fed8c
   name: cert-manager-operator-rhel9-2df1899f8c9f877cb9e1239b860f34c0e7a27d72d87b561fa79a5d7319699d59-annotation
-- image: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:2df1899f8c9f877cb9e1239b860f34c0e7a27d72d87b561fa79a5d7319699d59
+- image: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:38a4fe3f2a096ccd3e42973517e94212d8ac39bf1c38992f7f90cb1c2c0fed8c
   name: cert-manager-operator
 - image: registry.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:9f185dca969322dae0806b3f201fb2fdb43924a70eaa16e2d543355da0b4efbe
   name: cert_manager_acmesolver
