@@ -278,7 +278,7 @@ spec:
         - name: kind
           value: task
         resolver: bundles
-    - name: inspect-image
+    - name: validate-fbc
       params:
       - name: IMAGE_URL
         value: $(tasks.build-image-index.results.IMAGE_URL)
@@ -289,9 +289,9 @@ spec:
       taskRef:
         params:
         - name: name
-          value: inspect-image
+          value: validate-fbc
         - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-inspect-image:0.1@sha256:b4f8b61baf43ca503aae76078bb4cfe718ca21a5ab293d982978d6fd564bf1b6
+          value: quay.io/konflux-ci/tekton-catalog/task-validate-fbc:0.1@sha256:f370a6cb7b854d81cf779f8afc00e053df3a7619af9cf45c54e31ced1a4c5034
         - name: kind
           value: task
         resolver: bundles
@@ -300,56 +300,6 @@ spec:
         operator: in
         values:
         - "false"
-      workspaces:
-      - name: source
-        workspace: workspace
-    - name: fbc-validate
-      params:
-      - name: IMAGE_URL
-        value: $(tasks.build-image-index.results.IMAGE_URL)
-      - name: IMAGE_DIGEST
-        value: $(tasks.build-image-index.results.IMAGE_DIGEST)
-      - name: BASE_IMAGE
-        value: $(tasks.inspect-image.results.BASE_IMAGE)
-      runAfter:
-      - inspect-image
-      taskRef:
-        params:
-        - name: name
-          value: fbc-validation
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-fbc-validation:0.1@sha256:bf72968f8b36b92b4e8322f4208f20f07be1195be4551a7916d0b598c613ed4c
-        - name: kind
-          value: task
-        resolver: bundles
-      when:
-      - input: $(params.skip-checks)
-        operator: in
-        values:
-        - "false"
-      workspaces:
-      - name: workspace
-        workspace: workspace
-    - name: fbc-related-image-check
-      runAfter:
-      - fbc-validate
-      taskRef:
-        params:
-        - name: name
-          value: fbc-related-image-check
-        - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-fbc-related-image-check:0.1@sha256:17dc33ef07a8f87d1a8a2f6d4f496123e0db5d29bbe7ff7956462dc5d95c3170
-        - name: kind
-          value: task
-        resolver: bundles
-      when:
-      - input: $(params.skip-checks)
-        operator: in
-        values:
-        - "false"
-      workspaces:
-      - name: workspace
-        workspace: workspace
     workspaces:
     - name: workspace
     - name: git-auth
