@@ -26,6 +26,7 @@ Repository contains below repositories added as git submodules which was created
 outside the main code repository for better management.
 - [cert-manager-operator](https://github.com/openshift/cert-manager-operator)
 - [cert-manager](https://github.com/openshift/jetstack-cert-manager)
+- [cert-manager-istio-csr](https://github.com/openshift/cert-manager-istio-csr)
 
 In each release branch the git submodules are configured with equivalent release branch in their respective origin
 repositories. And when switching the parent repository between different branches, the submodule branches will not be
