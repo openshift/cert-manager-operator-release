@@ -2,7 +2,7 @@
 
 declare -a CONTAINERFILES
 
-CERT_MANAGER_OPERATOR_CONTAINERFILES=("Containerfile.cert-manager" "Containerfile.cert-manager.acmesolver" "Containerfile.cert-manager-operator" "Containerfile.cert-manager-operator.bundle" "Containerfile.catalog")
+mapfile -t CERT_MANAGER_OPERATOR_CONTAINERFILES < <(ls Containerfile.*)
 
 linter()
 {

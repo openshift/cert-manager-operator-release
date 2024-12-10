@@ -1,10 +1,12 @@
 ## local variables.
 cert_manager_submodule_dir = cert-manager
 cert_manager_operator_submodule_dir = cert-manager-operator
+istio_csr_submodule_dir = cert-manager-istio-csr
 cert_manager_containerfile_name = Containerfile.cert-manager
 cert_manager_acmesolver_containerfile_name = Containerfile.cert-manager.acmesolver
 cert_manager_operator_containerfile_name = Containerfile.cert-manager-operator
 cert_manager_operator_bundle_containerfile_name = Containerfile.cert-manager-operator.bundle
+istio_csr_containerfile_name = Containerfile.cert-manager-istio-csr
 commit_sha = $(strip $(shell git rev-parse HEAD))
 source_url = $(strip $(shell git remote get-url origin))
 release_version = v$(strip $(shell git branch --show-current | cut -d'-' -f2))
@@ -31,6 +33,13 @@ ifeq ($(PARENT_BRANCH_SUFFIX), main)
 CERT_MANAGER_OPERATOR_BRANCH = master
 endif
 
+## current branch name of the istio-csr submodule.
+ISTIO_CSR_BRANCH ?= release-$(PARENT_BRANCH_SUFFIX)
+
+ifeq ($(PARENT_BRANCH_SUFFIX), main)
+ISTIO_CSR_BRANCH = main
+endif
+
 ## container build tool to use for creating images.
 CONTAINER_ENGINE ?= podman
 
@@ -51,6 +60,9 @@ CATALOG_IMAGE ?= cert-manager-catalog
 
 ## image version to tag the created images with.
 IMAGE_VERSION ?= $(release_version)
+
+## image for istio-csr
+ISTIO_CSR_IMAGE ?= cert-manager-istio-csr
 
 ## image tag makes use of the branch name and
 ## when branch name is `main` use `latest` as the tag.
@@ -106,12 +118,14 @@ all: verify
 switch-submodules-branch:
 	cd $(cert_manager_submodule_dir); git checkout $(CERT_MANAGER_BRANCH); cd - > /dev/null
 	cd $(cert_manager_operator_submodule_dir); git checkout $(CERT_MANAGER_OPERATOR_BRANCH); cd - > /dev/null
+	cd $(istio_csr_submodule_dir); git checkout $(ISTIO_CSR_BRANCH); cd - > /dev/null
 	# update with local cache.
 	git submodule update
 
 ## update submodules revision to match the revision of the origin repository.
 .PHONY: update-submodules
 update-submodules:
+	git submodule update --remote $(istio_csr_submodule_dir)
 	git submodule update --remote $(cert_manager_submodule_dir)
 	git submodule update --remote $(cert_manager_operator_submodule_dir)
 
@@ -126,9 +140,7 @@ build-operator-image:
 
 ## build all operand images
 .PHONY: build-operand-images
-build-operand-images:
-	$(IMAGE_BUILD_CMD) -f $(cert_manager_containerfile_name) -t $(CERT_MANAGER_IMAGE):$(IMAGE_VERSION) .
-	$(IMAGE_BUILD_CMD) -f $(cert_manager_acmesolver_containerfile_name) -t $(CERT_MANAGER_ACMESOLVER_IMAGE):$(IMAGE_VERSION) .
+build-operand-images: build-cert-manager-image build-cert-manager-acmesolver-image build-istio-csr-image
 
 ## build operator bundle image.
 .PHONY: build-bundle-image
@@ -165,6 +177,11 @@ update-catalog: get-opm
 ## update catalog and build catalog image.
 .PHONY: catalog
 catalog: get-opm update-catalog build-catalog-image
+
+## build operand istio-csr image.
+.PHONY: build-istio-csr-image
+build-istio-csr-image:
+	$(IMAGE_BUILD_CMD) -f $(istio_csr_containerfile_name) -t $(ISTIO_CSR_IMAGE):$(IMAGE_VERSION) .
 
 ## check shell scripts.
 .PHONY: verify-shell-scripts
