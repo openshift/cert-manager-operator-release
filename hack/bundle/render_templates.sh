@@ -9,7 +9,6 @@ declare CERT_MANAGER_WEBHOOK_IMAGE
 declare CERT_MANAGER_CA_INJECTOR_IMAGE
 declare CERT_MANAGER_CONTROLLER_IMAGE
 declare CERT_MANAGER_ACMESOLVER_IMAGE
-declare KUBE_RBAC_PROXY_IMAGE
 
 CSV_FILE_NAME="cert-manager-operator.clusterserviceversion.yaml"
 ANNOTATIONS_FILE_NAME="annotations.yaml"
@@ -27,9 +26,6 @@ update_csv_manifest()
 	sed -i "s#quay.io/jetstack/cert-manager-controller.*#${CERT_MANAGER_CONTROLLER_IMAGE}#g" "${CSV_FILE}"
 	sed -i "s#quay.io/jetstack/cert-manager-cainjector.*#${CERT_MANAGER_CA_INJECTOR_IMAGE}#g" "${CSV_FILE}"
 	sed -i "s#quay.io/jetstack/cert-manager-acmesolver.*#${CERT_MANAGER_ACMESOLVER_IMAGE}#g" "${CSV_FILE}"
-
-	## replace kube-rbac-proxy image
-	sed -i "s#gcr.io/kubebuilder/kube-rbac-proxy.*#${KUBE_RBAC_PROXY_IMAGE}#g" "${CSV_FILE}"
 
 	## replace cert-manager-operator image
 	sed -i "s#openshift.io/cert-manager-operator.*#${CERT_MANAGER_OPERATOR_IMAGE}#g" "${CSV_FILE}"
@@ -59,7 +55,6 @@ usage()
 		'"<CERT_MANAGER_CA_INJECTOR_IMAGE>"' \
 		'"<CERT_MANAGER_CONTROLLER_IMAGE>"' \
 		'"<CERT_MANAGER_ACMESOLVER_IMAGE>"' \
-		'"<KUBE_RBAC_PROXY_IMAGE>"'
 	exit 1
 }
 
@@ -78,7 +73,6 @@ CERT_MANAGER_WEBHOOK_IMAGE=$4
 CERT_MANAGER_CA_INJECTOR_IMAGE=$5
 CERT_MANAGER_CONTROLLER_IMAGE=$6
 CERT_MANAGER_ACMESOLVER_IMAGE=$7
-KUBE_RBAC_PROXY_IMAGE=$8
 
 echo "[$(date)] -- INFO  -- $*"
 
