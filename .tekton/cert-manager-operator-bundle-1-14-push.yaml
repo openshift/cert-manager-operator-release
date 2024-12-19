@@ -3,15 +3,11 @@ kind: PipelineRun
 metadata:
   annotations:
     build.appstudio.openshift.io/repo: https://github.com/openshift/cert-manager-operator-release?rev={{revision}}
-    build.appstudio.openshift.io/pipeline: '{"name":"docker-build-oci-ta","bundle":"latest"}'
-    build.appstudio.openshift.io/request: "configure-pac"
     build.appstudio.redhat.com/commit_sha: '{{revision}}'
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/max-keep-runs: "3"
-    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch == "release-1.14" &&
-      (".tekton/cert-manager-operator-bundle-1-14-push.yaml".pathChanged() ||
-      "Containerfile.cert-manager-operator.bundle".pathChanged() || "hack/bundle/render_templates.sh".pathChanged() ||
-      "cert-manager-operator/***".pathChanged())
+    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
+      == "release-1.14"
   creationTimestamp: null
   labels:
     appstudio.openshift.io/application: cert-manager-operator-1-14
@@ -31,13 +27,6 @@ spec:
     value: Containerfile.cert-manager-operator.bundle
   - name: path-context
     value: .
-  - name: build-args
-    value:
-    - "RELEASE_VERSION=v1.14.2"
-    - "COMMIT_SHA={{revision}}"
-    - "SOURCE_URL={{source_url}}"
-  - name: prefetch-input
-    value: '{"type": "gomod", "path": "."}'
   pipelineSpec:
     description: |
       This pipeline is ideal for building container images from a Containerfile while maintaining trust after pipeline customization.
@@ -87,7 +76,7 @@ spec:
       description: Skip checks against built image
       name: skip-checks
       type: string
-    - default: "true"
+    - default: "false"
       description: Execute the build with network isolation
       name: hermetic
       type: string
@@ -99,7 +88,7 @@ spec:
       description: Image tag expiration time, time values could be something like
         1h, 2d, 3w for hours, days, and weeks, respectively.
       name: image-expires-after
-    - default: "true"
+    - default: "false"
       description: Build a source image.
       name: build-source-image
       type: string
