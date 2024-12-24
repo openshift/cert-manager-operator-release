@@ -5,10 +5,11 @@ declare CERT_MANAGER_OPERATOR_IMAGE
 declare CERT_MANAGER_OPERATOR_BUNDLE_IMAGE
 declare CERT_MANAGER_IMAGE
 declare CERT_MANAGER_ACMESOLVER_IMAGE
-declare KUBE_RBAC_PROXY_IMAGE
 
 CATALOG_MANIFEST_FILE_NAME="catalog.yaml"
 
+
+# TODO: [future] de-dup this function, as this is the same logic from render_templates.sh->update_csv_manifest() 
 update_catalog_manifest()
 {
 	CATALOG_MANIFEST_FILE="${CONFIGS_DIR}/${CATALOG_MANIFEST_FILE_NAME}"
@@ -26,9 +27,6 @@ update_catalog_manifest()
 
 	## replace cert-manager-operator-bundle image
 	sed -i "s#registry.redhat.io/cert-manager/cert-manager-operator-bundle.*#${CERT_MANAGER_OPERATOR_BUNDLE_IMAGE}#g" "${CATALOG_MANIFEST_FILE}"
-
-	## replace kube-rbac-proxy image
-	sed -i "s#registry.redhat.io/openshift4/ose-kube-rbac-proxy-rhel9.*#${KUBE_RBAC_PROXY_IMAGE}#g" "${CATALOG_MANIFEST_FILE}"
 }
 
 usage()
@@ -38,8 +36,7 @@ usage()
 		'"<CERT_MANAGER_OPERATOR_IMAGE>"' \
 		'"<CERT_MANAGER_OPERATOR_BUNDLE_IMAGE>"' \
 		'"<CERT_MANAGER_IMAGE>"' \
-		'"<CERT_MANAGER_ACMESOLVER_IMAGE>"' \
-		'"<KUBE_RBAC_PROXY_IMAGE>"'
+		'"<CERT_MANAGER_ACMESOLVER_IMAGE>"'
 	exit 1
 }
 
@@ -56,7 +53,6 @@ CERT_MANAGER_OPERATOR_IMAGE=$2
 CERT_MANAGER_OPERATOR_BUNDLE_IMAGE=$3
 CERT_MANAGER_IMAGE=$4
 CERT_MANAGER_ACMESOLVER_IMAGE=$5
-KUBE_RBAC_PROXY_IMAGE=$6
 
 echo "[$(date)] -- INFO  -- $*"
 
