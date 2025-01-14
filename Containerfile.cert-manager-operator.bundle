@@ -10,9 +10,9 @@ COPY --chmod=0550 hack/bundle/render_templates.sh /render_templates.sh
 # For image builds through konflux, konflux-bot will update the references.
 
 ARG CERT_MANAGER_OPERATOR_IMAGE=registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:bbf2fbcaa5751108a6babc0a74c509d35324994f7414f9293b9d8e6773404007 \
-    CERT_MANAGER_WEBHOOK_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:e1339ddb2c6925205a386087fb7472e8358eb910bd6d2e3b294bb8612d50f836 \
-    CERT_MANAGER_CA_INJECTOR_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:e1339ddb2c6925205a386087fb7472e8358eb910bd6d2e3b294bb8612d50f836 \
-    CERT_MANAGER_CONTROLLER_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:e1339ddb2c6925205a386087fb7472e8358eb910bd6d2e3b294bb8612d50f836 \
+    CERT_MANAGER_WEBHOOK_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:db362b4273eb89beb50b8128b16089f1d69f0348e0ec795ab0805653f460524c \
+    CERT_MANAGER_CA_INJECTOR_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:db362b4273eb89beb50b8128b16089f1d69f0348e0ec795ab0805653f460524c \
+    CERT_MANAGER_CONTROLLER_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:db362b4273eb89beb50b8128b16089f1d69f0348e0ec795ab0805653f460524c \
     CERT_MANAGER_ACMESOLVER_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:6f8d7f4ce91305709b2fc04fbce44fba0090b179347f6c48feb70a847f3c2ae5 \
     KUBE_RBAC_PROXY_IMAGE=registry.redhat.io/openshift4/ose-kube-rbac-proxy-rhel9@sha256:6fbeaf03058bb5d6e9e3311a7afe67666e0770532c978b6b57e77ea2851cb085
 
