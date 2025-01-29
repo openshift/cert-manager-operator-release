@@ -253,7 +253,7 @@ properties:
       capabilities: Seamless Upgrades
       categories: Security
       console.openshift.io/disable-operand-delete: "true"
-      containerImage: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:851784401c5a28d310cb453c231eaaf293641afef09134b96a495114fb32005d
+      containerImage: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:8f9513d420339d2f7f9bdbb8393414f1526db3c5340cee675f0f1e4ba65ebdc2
       createdAt: 2025-01-21T07:15:29
       features.operators.openshift.io/cnf: "false"
       features.operators.openshift.io/cni: "false"
@@ -346,7 +346,7 @@ properties:
 relatedImages:
 - image: registry.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:9a212e5a65ec7a71b4462539902515cfeecf5b02fd8a3f3beaaa6c5ecfc49ec2
   name: ""
-- image: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:851784401c5a28d310cb453c231eaaf293641afef09134b96a495114fb32005d
+- image: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:8f9513d420339d2f7f9bdbb8393414f1526db3c5340cee675f0f1e4ba65ebdc2
   name: ""
 - image: registry.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:32ca590f38af6c5d367609586869375087f863b318ce7c302aecab537f103035
   name: cert-manager-acmesolver
