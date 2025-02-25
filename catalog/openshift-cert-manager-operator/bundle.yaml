@@ -350,10 +350,10 @@ relatedImages:
   name: ""
 - image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:54a06ce6c31b6f3c1d7798e13e017e623ebfb5076d7810b7397be4ae59207427
   name: cert-manager-acmesolver
-- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:db40bfc8705ae82bbc38fbef95e0092891534dedd3ba903807399848decb94f5
+- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:d06e5cf8d15bb4da548c6a6faab946cd151ec34e4d3b0d55e3feec75f478485d
   name: cert-manager-webhook
-- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:db40bfc8705ae82bbc38fbef95e0092891534dedd3ba903807399848decb94f5
+- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:d06e5cf8d15bb4da548c6a6faab946cd151ec34e4d3b0d55e3feec75f478485d
   name: cert-manager-ca-injector
-- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:db40bfc8705ae82bbc38fbef95e0092891534dedd3ba903807399848decb94f5
+- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:d06e5cf8d15bb4da548c6a6faab946cd151ec34e4d3b0d55e3feec75f478485d
   name: cert-manager-controller
 schema: olm.bundle

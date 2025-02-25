@@ -81,11 +81,11 @@ relatedImages:
   name: cert-manager-operator
 - image: registry.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:1a3230bde5ea9a149983bdd47189c3de3c133b13540701f89f7391b89556bf78
   name: cert_manager_acmesolver
-- image: registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:cbfee26a10aa04d944e9109f0125863c613e9a372261add389b0d2152b485085
+- image: registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:d06e5cf8d15bb4da548c6a6faab946cd151ec34e4d3b0d55e3feec75f478485d
   name: cert_manager_webhook
-- image: registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:cbfee26a10aa04d944e9109f0125863c613e9a372261add389b0d2152b485085
+- image: registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:d06e5cf8d15bb4da548c6a6faab946cd151ec34e4d3b0d55e3feec75f478485d
   name: cert_manager_ca_injector
-- image: registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:cbfee26a10aa04d944e9109f0125863c613e9a372261add389b0d2152b485085
+- image: registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:d06e5cf8d15bb4da548c6a6faab946cd151ec34e4d3b0d55e3feec75f478485d
   name: cert_manager_controller
 - image: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:30312b1681794a31f85783e2a2bed37bc0b19c55905a4b87acfc4d04a97b4472
   name: kube-rbac-proxy
