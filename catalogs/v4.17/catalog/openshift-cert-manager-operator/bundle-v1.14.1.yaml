@@ -350,7 +350,7 @@ relatedImages:
   name: cert-manager-operator-rhel9-b6b6d9cd67eedc6f76bb50a7168656a53d66553c0418dc646dbe23d367a6a975-annotation
 - image: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:b6b6d9cd67eedc6f76bb50a7168656a53d66553c0418dc646dbe23d367a6a975
   name: cert-manager-operator
-- image: registry.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:400fc02f862990b45feb3540fa639954c01deab7bcde3c4e4fe6b9661e5f4c31
+- image: registry.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:33a56228584f61be9af88ba0e442cf4c7f554c599621f6f78f00ecf497fd7329
   name: cert_manager_acmesolver
 - image: registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:de700e55e423531ba0a94d266ab50da2bcc14a4b3ceb4d2b61d375f1fca2c17f
   name: cert_manager_webhook
