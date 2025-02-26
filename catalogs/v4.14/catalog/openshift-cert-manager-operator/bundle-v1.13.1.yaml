@@ -75,9 +75,9 @@ properties:
 relatedImages:
 - image: registry.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:8df1e82a89306bdcdb500bbfe76e770db58b9ceb9f120f520b6baf345943cc60
   name: ""
-- image: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:4e854c14fecbd27107b91b76164ce2e1575ce60202d835abba5962fb5d386560
+- image: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:955e11816137fdfb75e89c2db941250b06e1556352ea45550b6d6b83be62b62d
   name: cert-manager-operator-rhel9-4e854c14fecbd27107b91b76164ce2e1575ce60202d835abba5962fb5d386560-annotation
-- image: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:4e854c14fecbd27107b91b76164ce2e1575ce60202d835abba5962fb5d386560
+- image: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:955e11816137fdfb75e89c2db941250b06e1556352ea45550b6d6b83be62b62d
   name: cert-manager-operator
 - image: registry.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:7915f8049d2451b425e3674eb60e596b9b11946ffda1497f5d5607799e2bf431
   name: cert_manager_acmesolver
