@@ -32,15 +32,10 @@ spec:
     value: .
   - name: build-platforms
     value:
-    - linux/x86_64
-    - linux/s390x
-    - linux/ppc64le
-    - linux/arm64
-  - name: build-args
-    value:
-    - "RELEASE_VERSION=v1.15.2"
-    - "COMMIT_SHA={{revision}}"
-    - "SOURCE_URL={{source_url}}"
+      - linux/x86_64
+      - linux/s390x
+      - linux/ppc64le
+      - linux/arm64
   - name: prefetch-input
     value: '{"type": "gomod", "path": "cert-manager"}'
   pipelineSpec:
@@ -186,6 +181,38 @@ spec:
       workspaces:
       - name: basic-auth
         workspace: git-auth
+    - name: fetch-repository-details
+      runAfter:
+        - clone-repository
+      taskSpec:
+        results:
+          - name: release_version
+            description: "release version of the component"
+          - name: commit_sha
+            description: "latest commit hash of the component repository"
+          - name: source_url
+            description: "source url of the component repository"
+          - name: parent_commit_sha
+            description: "latest commit hash of the parent repository hosting the component"
+          - name: parent_source_url
+            description: "source url of the parent repository hosting the component"
+        steps:
+          - name: store-repo-details
+            image: quay.io/konflux-ci/appstudio-utils@sha256:28d4a7609b7e1b11a6c273dad4aabc24f90f2e79ff4b0b2852822da1ab53204a
+            script: |
+              #!/usr/bin/env bash
+              set -e
+
+              cd cert-manager
+              git remote get-url origin | tr -d '\n' | tee "$(results.source_url.path)"
+              git rev-parse HEAD | tr -d '\n' | tee "$(results.commit_sha.path)"
+              cd -
+              git remote get-url origin | tr -d '\n' | tee "$(results.parent_source_url.path)"
+              git rev-parse HEAD | tr -d '\n' | tee "$(results.parent_commit_sha.path)"
+              cat cert-manager-release-version | tr -d '\n' | tee "$(results.release_version.path)"
+      workspaces:
+      - name: basic-auth
+        workspace: git-auth
     - name: prefetch-dependencies
       params:
       - name: input
@@ -197,7 +224,7 @@ spec:
       - name: ociArtifactExpiresAfter
         value: $(params.image-expires-after)
       runAfter:
-      - clone-repository
+      - fetch-repository-details
       taskRef:
         params:
         - name: name
@@ -235,7 +262,11 @@ spec:
         value: $(tasks.clone-repository.results.commit)
       - name: BUILD_ARGS
         value:
-        - $(params.build-args[*])
+        - "RELEASE_VERSION=$(tasks.fetch-repository-details.results.release_version)"
+        - "COMMIT_SHA=$(tasks.fetch-repository-details.results.commit_sha)"
+        - "SOURCE_URL=$(tasks.fetch-repository-details.results.source_url)"
+        - "PARENT_COMMIT_SHA=$(tasks.fetch-repository-details.results.parent_commit_sha)"
+        - "PARENT_SOURCE_URL=$(tasks.fetch-repository-details.results.parent_source_url)"
       - name: BUILD_ARGS_FILE
         value: $(params.build-args-file)
       - name: SOURCE_ARTIFACT

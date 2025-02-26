@@ -19,10 +19,14 @@ FROM registry.redhat.io/rhel9-4-els/rhel:9.4
 # Values for below ARGs will passed from tekton configs for konflux builds.
 ## Release version of the cert-manager source code used in the build.
 ARG RELEASE_VERSION
-## Commit hash that considered for the image build.
+## Commit hash of the cert-manager repository that is considered for the image build.
 ARG COMMIT_SHA
 ## github URL of the cert-manager source repository.
 ARG SOURCE_URL
+## Commit hash of the cert-manager-release repository that is considered for the image build.
+ARG PARENT_COMMIT_SHA
+## github URL of the cert-manager-release source repository.
+ARG PARENT_SOURCE_URL
 ARG SOURCE_DIR="/go/src/github.com/openshift/jetstack-cert-manager"
 
 COPY --from=builder $SOURCE_DIR/_output/acmesolver /app/cmd/acmesolver/acmesolver
@@ -42,7 +46,10 @@ LABEL com.redhat.component="jetstack-cert-manager-container" \
       io.openshift.expose-services="" \
       io.openshift.tags="data,images,cert-manager" \
       io.openshift.build.commit.id="${COMMIT_SHA}" \
+      io.openshift.build.parent.commit.id="${PARENT_COMMIT_SHA}" \
       io.openshift.build.source-location="${SOURCE_URL}" \
+      io.openshift.build.parent.source-location="${PARENT_SOURCE_URL}" \
       io.openshift.build.commit.url="${SOURCE_URL}/commit/${COMMIT_SHA}" \
+      io.openshift.build.parent.commit.url="${PARENT_SOURCE_URL}/commit/${PARENT_COMMIT_SHA}" \
       io.k8s.display-name="cert-manager-controller" \
       io.k8s.description="jetstack-cert-manager-container"
