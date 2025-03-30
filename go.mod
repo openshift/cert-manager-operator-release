@@ -1,6 +1,8 @@
 module github.com/openshift/cert-manager-operator-release
 
-go 1.22.3
+go 1.23.0
+
+toolchain go1.23.7
 
 require github.com/mikefarah/yq/v4 v4.45.1
 
@@ -23,7 +25,7 @@ require (
 	github.com/yuin/gopher-lua v1.1.1 // indirect
 	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
 	gopkg.in/op/go-logging.v1 v1.0.0-20160211212156-b2cb9fa56473 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
