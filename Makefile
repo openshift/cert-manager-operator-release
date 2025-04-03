@@ -18,9 +18,6 @@ CATALOG_IMAGE ?= cert-manager-catalog
 ## image version to tag the created images with.
 IMAGE_VERSION ?= $(release_version)
 
-## image for istio-csr
-ISTIO_CSR_IMAGE ?= cert-manager-istio-csr
-
 ## image tag makes use of the branch name and
 ## when branch name is `main` use `latest` as the tag.
 ifeq ($(PARENT_BRANCH_SUFFIX), main)
@@ -78,13 +75,8 @@ build-catalog-image:
 ## update catalog using the provided bundle image.
 .PHONY: update-catalog
 update-catalog: get-opm
-# validate required parameters are set.
-	@(if [ -z $(OPERATOR_BUNDLE_IMAGE) ] || [ -z $(CATALOG_DIR) ]; then echo "\n-- ERROR -- OPERATOR_BUNDLE_IMAGE and CATALOG_DIR parameters must be set for update-catalog target\n"; exit 1; fi)
-
-# --migrate-level=bundle-object-to-csv-metadata is used for creating bundle metadata in `olm.csv.metadata` format.
-# Refer https://github.com/konflux-ci/build-definitions/blob/main/task/fbc-validation/0.1/TROUBLESHOOTING.md for details.
-	$(OPM_TOOL_PATH) render $(OPERATOR_BUNDLE_IMAGE) --migrate-level=bundle-object-to-csv-metadata -o yaml > $(CATALOG_DIR)/openshift-cert-manager-operator/bundle.yaml
-	$(OPM_TOOL_PATH) validate $(CATALOG_DIR)
+	# Ex: make update-catalog OPERATOR_BUNDLE_IMAGE=registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:4114321b0ab6ceb882f26501ff9b22214d90b83d92466e7c5a62217f592c1fed CATALOG_DIR=catalogs/v4.17/catalog BUNDLE_FILE_NAME=bundle-v1.15.0.yaml REPLICATE_BUNDLE_FILE_IN_CATALOGS=no USE_MIGRATE_LEVEL_FLAG=yes
+	./hack/update_catalog.sh $(OPM_TOOL_PATH) $(OPERATOR_BUNDLE_IMAGE) $(CATALOG_DIR) $(BUNDLE_FILE_NAME) $(REPLICATE_BUNDLE_FILE_IN_CATALOGS) $(USE_MIGRATE_LEVEL_FLAG)
 
 ## update catalog and build catalog image.
 .PHONY: catalog
@@ -107,7 +99,7 @@ verify-containerfiles:
 
 ## verify the changes are working as expected.
 .PHONY: verify
-verify: verify-shell-scripts verify-containerfiles validate-renovate-config build-images
+verify: verify-shell-scripts verify-containerfiles validate-renovate-config
 
 ## get opm(operator package manager) tool.
 .PHONY: get-opm
