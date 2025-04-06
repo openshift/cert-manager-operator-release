@@ -1,11 +1,13 @@
 module github.com/openshift/cert-manager-operator-release
 
-go 1.22.3
+go 1.24
+
+toolchain go1.24.2
 
 require github.com/mikefarah/yq/v4 v4.44.3
 
 require (
-	github.com/a8m/envsubst v1.4.2 // indirect
+	github.com/a8m/envsubst v1.4.3 // indirect
 	github.com/alecthomas/participle/v2 v2.1.1 // indirect
 	github.com/dimchansky/utfbom v1.1.1 // indirect
 	github.com/elliotchance/orderedmap v1.6.0 // indirect
