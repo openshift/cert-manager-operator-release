@@ -21,7 +21,7 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/spf13/cobra v1.8.1 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/yuin/gopher-lua v1.1.1 // indirect
 	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
