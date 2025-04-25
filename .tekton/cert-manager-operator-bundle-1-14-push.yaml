@@ -2,16 +2,16 @@ apiVersion: tekton.dev/v1
 kind: PipelineRun
 metadata:
   annotations:
-    build.appstudio.openshift.io/repo: https://github.com/openshift/cert-manager-operator-release?rev={{revision}}
     build.appstudio.openshift.io/pipeline: '{"name":"docker-build-oci-ta","bundle":"latest"}'
-    build.appstudio.openshift.io/request: "configure-pac"
+    build.appstudio.openshift.io/repo: https://github.com/openshift/cert-manager-operator-release?rev={{revision}}
+    build.appstudio.openshift.io/request: configure-pac
     build.appstudio.redhat.com/commit_sha: '{{revision}}'
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/max-keep-runs: "3"
-    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch == "release-1.14" &&
-      (".tekton/cert-manager-operator-bundle-1-14-push.yaml".pathChanged() ||
-      "Containerfile.cert-manager-operator.bundle".pathChanged() || "hack/bundle/render_templates.sh".pathChanged() ||
-      "cert-manager-operator/***".pathChanged())
+    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
+      == "release-1.14" && (".tekton/cert-manager-operator-bundle-1-14-push.yaml".pathChanged()
+      || "Containerfile.cert-manager-operator.bundle".pathChanged() || "hack/bundle/render_templates.sh".pathChanged()
+      || "cert-manager-operator/***".pathChanged())
   creationTimestamp: null
   labels:
     appstudio.openshift.io/application: cert-manager-operator-1-14
@@ -33,14 +33,15 @@ spec:
     value: .
   - name: build-args
     value:
-    - "RELEASE_VERSION=v1.14.2"
-    - "COMMIT_SHA={{revision}}"
-    - "SOURCE_URL={{source_url}}"
+    - RELEASE_VERSION=v1.14.2
+    - COMMIT_SHA={{revision}}
+    - SOURCE_URL={{source_url}}
   - name: prefetch-input
     value: '{"type": "gomod", "path": "."}'
   pipelineRef:
     name: single-arch-build-pipeline
-  taskRunTemplate: {}
+  taskRunTemplate:
+    serviceAccountName: build-pipeline-cert-manager-operator-bundle-1-14
   workspaces:
   - name: git-auth
     secret:
