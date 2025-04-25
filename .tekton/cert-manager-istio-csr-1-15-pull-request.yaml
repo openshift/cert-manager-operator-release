@@ -610,7 +610,8 @@ spec:
       optional: true
     - name: netrc
       optional: true
-  taskRunTemplate: {}
+  taskRunTemplate:
+    serviceAccountName: build-pipeline-cert-manager-istio-csr-1-15
   workspaces:
   - name: git-auth
     secret:
