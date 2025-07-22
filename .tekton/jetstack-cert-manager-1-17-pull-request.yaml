@@ -4,18 +4,19 @@ metadata:
   annotations:
     build.appstudio.openshift.io/repo: https://github.com/openshift/cert-manager-operator-release?rev={{revision}}
     build.appstudio.redhat.com/commit_sha: '{{revision}}'
+    build.appstudio.redhat.com/pull_request_number: '{{pull_request_number}}'
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
-    pipelinesascode.tekton.dev/cancel-in-progress: "false"
+    pipelinesascode.tekton.dev/cancel-in-progress: "true"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
-    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "release-1.16" && (".tekton/jetstack-cert-manager-1-16-push.yaml".pathChanged() ||
+    pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
+      == "release-1.17" && (".tekton/jetstack-cert-manager-1-17-pull-request.yaml".pathChanged() ||
       "Containerfile.cert-manager".pathChanged() || "cert-manager/***".pathChanged())
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: jetstack-cert-manager-1-16
-    appstudio.openshift.io/component: jetstack-cert-manager-1-16
+    appstudio.openshift.io/application: jetstack-cert-manager-1-17
+    appstudio.openshift.io/component: jetstack-cert-manager-1-17
     pipelines.appstudio.openshift.io/type: build
-  name: jetstack-cert-manager-1-16-on-push
+  name: jetstack-cert-manager-1-17-on-pull-request
   namespace: cert-manager-oape-tenant
 spec:
   params:
@@ -24,14 +25,16 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/jetstack-cert-manager-1-16/jetstack-cert-manager-1-16:{{revision}}
+    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/jetstack-cert-manager-1-17/jetstack-cert-manager-1-17:on-pr-{{revision}}
+  - name: image-expires-after
+    value: 5d
   - name: dockerfile
     value: Containerfile.cert-manager
   - name: path-context
     value: .
   - name: build-args
     value:
-    - RELEASE_VERSION=v1.16.4
+    - RELEASE_VERSION=v1.17.4
     - COMMIT_SHA={{revision}}
     - SOURCE_URL={{source_url}}
   - name: prefetch-input
@@ -39,7 +42,7 @@ spec:
   pipelineRef:
     name: multi-arch-build-pipeline
   taskRunTemplate:
-    serviceAccountName: build-pipeline-jetstack-cert-manager-1-16
+    serviceAccountName: build-pipeline-jetstack-cert-manager-1-17
   workspaces:
   - name: git-auth
     secret:
