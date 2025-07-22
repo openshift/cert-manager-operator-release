@@ -9,15 +9,14 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "true"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
-      == "release-1.16" && (".tekton/cert-manager-operator-bundle-1-16-pull-request.yaml".pathChanged() ||
-      "Containerfile.cert-manager-operator.bundle".pathChanged() || "hack/bundle/render_templates.sh".pathChanged() ||
-      "cert-manager-operator/***".pathChanged())
+      == "release-1.17" && (".tekton/cert-manager-operator-1-17-pull-request.yaml".pathChanged() ||
+      "Containerfile.cert-manager-operator".pathChanged() || "cert-manager-operator/***".pathChanged())
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: cert-manager-operator-1-16
-    appstudio.openshift.io/component: cert-manager-operator-bundle-1-16
+    appstudio.openshift.io/application: cert-manager-operator-1-17
+    appstudio.openshift.io/component: cert-manager-operator-1-17
     pipelines.appstudio.openshift.io/type: build
-  name: cert-manager-operator-bundle-1-16-on-pull-request
+  name: cert-manager-operator-1-17-on-pull-request
   namespace: cert-manager-oape-tenant
 spec:
   params:
@@ -26,24 +25,22 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/cert-manager-operator-1-16/cert-manager-operator-bundle-1-16:on-pr-{{revision}}
+    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/cert-manager-operator-1-17/cert-manager-operator-1-17:on-pr-{{revision}}
   - name: image-expires-after
     value: 5d
   - name: dockerfile
-    value: Containerfile.cert-manager-operator.bundle
+    value: Containerfile.cert-manager-operator
   - name: path-context
     value: .
   - name: build-args
     value:
-    - RELEASE_VERSION=v1.16.0
+    - RELEASE_VERSION=v1.17.0
     - COMMIT_SHA={{revision}}
     - SOURCE_URL={{source_url}}
-  - name: prefetch-input
-    value: '{"type": "gomod", "path": "."}'
   pipelineRef:
-    name: single-arch-build-pipeline
+    name: multi-arch-build-pipeline
   taskRunTemplate:
-    serviceAccountName: build-pipeline-cert-manager-operator-bundle-1-16
+    serviceAccountName: build-pipeline-cert-manager-operator-1-17
   workspaces:
   - name: git-auth
     secret:
