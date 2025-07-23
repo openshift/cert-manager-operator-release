@@ -8,15 +8,14 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "release-1.16" && (".tekton/cert-manager-operator-bundle-1-16-push.yaml".pathChanged() ||
-      "Containerfile.cert-manager-operator.bundle".pathChanged() || "hack/bundle/render_templates.sh".pathChanged() ||
-      "cert-manager-operator/***".pathChanged())
+      == "release-1.17" && (".tekton/cert-manager-istio-csr-1-17-push.yaml".pathChanged() ||
+      "Containerfile.cert-manager-istio-csr".pathChanged() || "cert-manager-istio-csr/***".pathChanged())
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: cert-manager-operator-1-16
-    appstudio.openshift.io/component: cert-manager-operator-bundle-1-16
+    appstudio.openshift.io/application: cert-manager-istio-csr-1-17
+    appstudio.openshift.io/component: cert-manager-istio-csr-1-17
     pipelines.appstudio.openshift.io/type: build
-  name: cert-manager-operator-bundle-1-16-on-push
+  name: cert-manager-istio-csr-1-17-on-push
   namespace: cert-manager-oape-tenant
 spec:
   params:
@@ -25,22 +24,22 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/cert-manager-operator-1-16/cert-manager-operator-bundle-1-16:{{revision}}
+    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/cert-manager-istio-csr-1-17/cert-manager-istio-csr-1-17:{{revision}}
   - name: dockerfile
-    value: Containerfile.cert-manager-operator.bundle
+    value: Containerfile.cert-manager-istio-csr
   - name: path-context
     value: .
   - name: build-args
     value:
-    - RELEASE_VERSION=v1.16.0
-    - COMMIT_SHA={{revision}}
-    - SOURCE_URL={{source_url}}
+    - "RELEASE_VERSION=v0.14.0"
+    - "COMMIT_SHA={{revision}}"
+    - "SOURCE_URL={{source_url}}"
   - name: prefetch-input
-    value: '{"type": "gomod", "path": "."}'
+    value: '{"type": "gomod", "path": "cert-manager-istio-csr"}'
   pipelineRef:
-    name: single-arch-build-pipeline
+    name: multi-arch-build-pipeline
   taskRunTemplate:
-    serviceAccountName: build-pipeline-cert-manager-operator-bundle-1-16
+    serviceAccountName: build-pipeline-cert-manager-istio-csr-1-17
   workspaces:
   - name: git-auth
     secret:

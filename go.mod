@@ -1,6 +1,6 @@
 module github.com/openshift/cert-manager-operator-release
 
-go 1.23.0
+go 1.23.10
 
 require github.com/mikefarah/yq/v4 v4.45.1
 
