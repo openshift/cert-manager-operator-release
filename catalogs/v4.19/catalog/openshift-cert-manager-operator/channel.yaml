@@ -12,8 +12,8 @@ entries:
 - name: cert-manager-operator.v1.16.1
   replaces: cert-manager-operator.v1.16.0
   skipRange: '>=1.15.1 <1.16.1'
-  skips: 
-  - cert-manager-operator.v1.15.1
+  skips:
+  - cert-manager-operator.v1.16.0
 - name: cert-manager-operator.v1.17.0
   replaces: cert-manager-operator.v1.16.1
   skipRange: '>=1.16.1 <1.17.0'
@@ -45,8 +45,8 @@ entries:
 - name: cert-manager-operator.v1.16.1
   replaces: cert-manager-operator.v1.16.0
   skipRange: '>=1.15.1 <1.16.1'
-  skips: 
-  - cert-manager-operator.v1.15.1
+  skips:
+  - cert-manager-operator.v1.16.0
 name: stable-v1.16
 package: openshift-cert-manager-operator
 schema: olm.channel
@@ -64,8 +64,8 @@ entries:
 - name: cert-manager-operator.v1.16.1
   replaces: cert-manager-operator.v1.16.0
   skipRange: '>=1.15.1 <1.16.1'
-  skips: 
-  - cert-manager-operator.v1.15.1
+  skips:
+  - cert-manager-operator.v1.16.0
 - name: cert-manager-operator.v1.17.0
   replaces: cert-manager-operator.v1.16.1
   skipRange: '>=1.16.1 <1.17.0'

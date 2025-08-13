@@ -1,0 +1,175 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: run-prowjob-pipeline
+spec:
+  description: >-
+    Run a parameterized prowjob using gangway.
+  params:
+    # Konflux Snapshot
+    - name: SNAPSHOT
+      type: string
+      description: |
+        JSON snapshot of the application containing component information.
+        Example: {
+          "components": [
+            {
+              "name": "my-operator",
+              "containerImage": "quay.io/myorg/my-operator:v1.2.3-abc"
+            },
+            {
+              "name": "my-operator-bundle", 
+              "containerImage": "quay.io/myorg/my-operator-bundle:v1.2.3-abc"
+            }
+          ]
+        }
+
+    # OpenShift CI Test Environment Claim
+    - name: GANGWAY_TOKEN
+      type: string
+      description: |
+        Name of the secret containing the token to authenticate with gangway.
+        The secret should exist in the same namespace and contain a 'token' key.
+    - name: CLOUD_PROVIDER
+      type: string
+      default: aws
+      description: |
+        Cloud provider to use for the test.
+        Valid values: aws, gcp, azure
+    - name: OPENSHIFT_VERSION
+      type: string
+      default: "4.18"
+      description: |
+        OpenShift version to test against in format 4.x or 4.x.y.
+        Examples: "4.18", "4.17.5"
+    - name: CHANNEL_STREAM
+      type: string
+      default: stable
+      description: |
+        OpenShift stream/channel to test against.
+        Valid values: stable, fast, candidate, 4-stable, nightly, konflux-nightly, ci
+    - name: ARCHITECTURE
+      type: string
+      default: arm64
+      description: |
+        Target architecture for testing.
+        Valid values: amd64, arm64
+    - name: ENVS
+      type: string
+      default: ""
+      description: |
+        Optional environment variables for the test, comma-separated.
+        Example: "COMPUTE_NODE_TYPE=t2a-standard-4,COMPUTE_NODE_REPLICAS=2"
+
+    # Run Tests
+    - name: PULL_SECRET
+      type: string
+      default: ""
+      description: |
+        Name of pull secret for private images (created in vault.ci.openshift.org).
+        Should be in test-credential namespace with .dockerconfigjson field.
+    - name: ARTIFACTS_BUILD_ROOT
+      type: string
+      default: "quay-proxy.ci.openshift.org/openshift/ci:ocp_builder_rhel-9-golang-1.22-openshift-4.18"
+      description: |
+        Base image for building the artifacts image.
+        Exmaple: "brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_9_1.22"
+    - name: DOCKERFILE_ADDITIONS
+      type: string
+      default: ""
+      description: |
+        Additional Dockerfile commands for building the artifacts image.
+        Example: "RUN make build && make install"
+    - name: DEPLOY_TEST_COMMAND
+      type: string
+      description: |
+        Command that deploys and tests the application on the cluster.
+        Example: "make deploy && make test-e2e"
+
+  # Pipeline Results
+  results:
+    - name: PROWJOB_ID
+      description: ID of the triggered prowjob
+      value: $(tasks.run-prowjob.results.PROWJOB_ID)
+    - name: PROWJOB_URL
+      description: Spyglass URL for prowjob results
+      value: $(tasks.run-prowjob.results.PROWJOB_URL)
+    - name: PROWJOB_STATUS
+      description: Final prowjob status
+      value: $(tasks.run-prowjob.results.PROWJOB_STATUS)
+
+  tasks:
+    - name: run-prowjob
+      displayName: "Running prowjob $(params.PROWJOB_NAME)"
+      taskRef:
+        resolver: git
+        params:
+          - name: url
+            value: https://github.com/openshift/konflux-tasks
+          - name: revision
+            value: main
+          - name: pathInRepo
+            value: tasks/run-prowjob.yaml
+      params:
+        - name: SNAPSHOT
+          value: $(params.SNAPSHOT)
+        - name: GANGWAY_TOKEN
+          value: $(params.GANGWAY_TOKEN)
+        - name: CLOUD_PROVIDER
+          value: $(params.CLOUD_PROVIDER)
+        - name: OPENSHIFT_VERSION
+          value: $(params.OPENSHIFT_VERSION)
+        - name: CHANNEL_STREAM
+          value: $(params.CHANNEL_STREAM)
+        - name: ARCHITECTURE
+          value: $(params.ARCHITECTURE)
+        - name: ENVS
+          value: $(params.ENVS)
+        - name: ARTIFACTS_BUILD_ROOT
+          value: $(params.ARTIFACTS_BUILD_ROOT)
+        - name: DOCKERFILE_ADDITIONS
+          value: $(params.DOCKERFILE_ADDITIONS)
+        - name: DEPLOY_TEST_COMMAND
+          value: $(params.DEPLOY_TEST_COMMAND)
+        - name: PULL_SECRET
+          value: $(params.PULL_SECRET)
+# ---
+## To be created in the tenants-config repo: https://gitlab.cee.redhat.com/releng/konflux-release-data/-/tree/main/tenants-config
+# apiVersion: appstudio.redhat.com/v1beta2
+# kind: IntegrationTestScenario
+# metadata:
+#   labels:
+#     test.appstudio.openshift.io/optional: "true"
+#   name: run-prowjob
+#   namespace: cert-manager-oape-tenant
+# spec:
+#   application: cert-manager-operator-fbc
+#   contexts:
+#     - description: Sanity testing for cert-manager-operator-fbc
+#       name: component_cert-manager-operator-fbc
+#   params:
+#     - name: SNAPSHOT
+#       value: |
+#         {
+#           "components": [
+#             {
+#               "name": "cert-manager-operator-fbc",
+#               "containerImage": "quay.io/redhat-user-workloads/cert-manager-oape-tenant/cert-manager-operator/cert-manager-operator-fbc:latest"
+#             }
+#           ]
+#         }
+#     - name: DEPLOY_TEST_COMMAND
+#       value: 'E2E_GINKGO_LABEL_FILTER="Platform: isSubsetOf {AWS} && !TechPreview" make test-e2e'
+#     - name: PULL_SECRET
+#       value: "openshift-custom-mirror-registry"
+#     - name: GANGWAY_TOKEN
+#       value: "tmp-gangway-api-token"
+#   resolverRef:
+#     params:
+#       - name: url
+#         value: https://github.com/lunarwhite/ocp-cert-manager-operator-release.git
+#       - name: revision
+#         value: tmp
+#       - name: pathInRepo
+#         value: .tekton/run-prowjob-pipeline.yaml
+#     resolver: git

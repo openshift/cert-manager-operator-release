@@ -25,7 +25,7 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/cert-manager-operator-4-16/cert-manager-operator-index-4-16:on-pr-{{revision}}
+    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/cert-manager-operator-4-16/cert-manager-operator-index-4-16:remove-skips
   - name: image-expires-after
     value: 5d
   - name: dockerfile
