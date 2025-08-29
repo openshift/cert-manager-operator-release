@@ -8,14 +8,14 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "release-1.17" && (".tekton/cert-manager-operator-1-17-push.yaml".pathChanged() ||
-      "Containerfile.cert-manager-operator".pathChanged() || "cert-manager-operator/***".pathChanged())
+      == "release-1.18" && (".tekton/jetstack-cert-manager-1-18-push.yaml".pathChanged() ||
+      "Containerfile.cert-manager".pathChanged() || "cert-manager/***".pathChanged())
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: cert-manager-operator-1-17
-    appstudio.openshift.io/component: cert-manager-operator-1-17
+    appstudio.openshift.io/application: jetstack-cert-manager-1-18
+    appstudio.openshift.io/component: jetstack-cert-manager-1-18
     pipelines.appstudio.openshift.io/type: build
-  name: cert-manager-operator-1-17-on-push
+  name: jetstack-cert-manager-1-18-on-push
   namespace: cert-manager-oape-tenant
 spec:
   params:
@@ -24,20 +24,22 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/cert-manager-operator-1-17/cert-manager-operator-1-17:{{revision}}
+    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/jetstack-cert-manager-1-18/jetstack-cert-manager-1-18:{{revision}}
   - name: dockerfile
-    value: Containerfile.cert-manager-operator
+    value: Containerfile.cert-manager
   - name: path-context
     value: .
   - name: build-args
     value:
-    - RELEASE_VERSION=v1.17.0
+    - RELEASE_VERSION=v1.18.2
     - COMMIT_SHA={{revision}}
     - SOURCE_URL={{source_url}}
+  - name: prefetch-input
+    value: '{"type": "gomod", "path": "cert-manager"}'
   pipelineRef:
     name: multi-arch-build-pipeline
   taskRunTemplate:
-    serviceAccountName: build-pipeline-cert-manager-operator-1-17
+    serviceAccountName: build-pipeline-jetstack-cert-manager-1-18
   workspaces:
   - name: git-auth
     secret:
