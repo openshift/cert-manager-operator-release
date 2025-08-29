@@ -175,3 +175,17 @@ $(CERT_MANAGER_OPERATOR_BUNDLE_IMAGE):$(IMAGE_VERSION)
 validate-renovate-config:
 	./hack/renovate-config-validator.sh
 
+## update tekton pipeline versions.
+## Usage: make update-tekton-versions OPERATOR_VERSION=v1.18.0 ISTIO_CSR_VERSION=v0.14.2 JETSTACK_VERSION=v1.18.2
+.PHONY: update-tekton-versions
+update-tekton-versions:
+	@if [ -z "$(OPERATOR_VERSION)$(ISTIO_CSR_VERSION)$(JETSTACK_VERSION)" ]; then \
+		echo "Error: At least one version must be specified"; \
+		echo "Usage: make update-tekton-versions OPERATOR_VERSION=v1.18.0 [ISTIO_CSR_VERSION=v0.14.2] [JETSTACK_VERSION=v1.18.2]"; \
+		exit 1; \
+	fi
+	./hack/update_tekton_versions.sh \
+		$(if $(OPERATOR_VERSION),-o $(OPERATOR_VERSION)) \
+		$(if $(ISTIO_CSR_VERSION),-i $(ISTIO_CSR_VERSION)) \
+		$(if $(JETSTACK_VERSION),-j $(JETSTACK_VERSION))
+
