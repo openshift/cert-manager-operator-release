@@ -1,8 +1,24 @@
 #!/bin/bash
 
-# Script to update Tekton pipeline files with new version numbers
-# This script renames files from old version pattern to new version pattern
-# and updates all version references within the files
+# Tekton Version Update Script
+# ===========================
+# 
+# This script updates Tekton pipeline files with new version numbers.
+# It handles file renaming and content updates for cert-manager components.
+#
+# USAGE EXAMPLES:
+#   # Update all components
+#   ./hack/update_tekton_versions.sh -o v1.18.0 -i v0.14.2 -j v1.18.2
+#   
+#   # Dry run first
+#   ./hack/update_tekton_versions.sh --dry-run -o v1.18.0 -i v0.14.2 -j v1.18.2
+#   
+#   # Update single component
+#   ./hack/update_tekton_versions.sh -o v1.18.0
+#   
+#   # Use Make target
+#   make update-tekton-versions OPERATOR_VERSION=v1.18.0 ISTIO_CSR_VERSION=v0.14.2 JETSTACK_VERSION=v1.18.2
+#
 
 set -euo pipefail
 
