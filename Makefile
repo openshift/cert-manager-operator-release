@@ -1,7 +1,10 @@
 ## local variables.
 cert_manager_submodule_dir = cert-manager
+cert_manager_submodule_tag = $(strip $(shell git config -f .gitmodules submodule.jetstack-cert-manager.tag))
 cert_manager_operator_submodule_dir = cert-manager-operator
+cert_manager_operator_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.cert-manager-operator.branch))
 istio_csr_submodule_dir = cert-manager-istio-csr
+istio_csr_submodule_tag = $(strip $(shell git config -f .gitmodules submodule.cert-manager-istio-csr.tag))
 cert_manager_containerfile_name = Containerfile.cert-manager
 cert_manager_acmesolver_containerfile_name = Containerfile.cert-manager.acmesolver
 cert_manager_operator_containerfile_name = Containerfile.cert-manager-operator
@@ -10,6 +13,18 @@ istio_csr_containerfile_name = Containerfile.cert-manager-istio-csr
 commit_sha = $(strip $(shell git rev-parse HEAD))
 source_url = $(strip $(shell git remote get-url origin))
 release_version = v$(strip $(shell git branch --show-current | cut -d'-' -f2))
+
+
+## validate that tags and branches are not empty
+ifeq ($(cert_manager_submodule_tag),)
+$(error cert_manager_submodule_tag is empty.)
+endif
+ifeq ($(cert_manager_operator_submodule_branch),)
+$(error cert_manager_operator_submodule_branch is empty.)
+endif
+ifeq ($(istio_csr_submodule_tag),)
+$(error istio_csr_submodule_tag is empty.)
+endif
 
 ## cert-manager-operator-release and cert-manager follow same naming for release
 ## branches except for cert-manager-operator which has release version as suffix in
@@ -107,9 +122,10 @@ switch-submodules-branch:
 ## update submodules revision to match the revision of the origin repository.
 .PHONY: update-submodules
 update-submodules:
-	git submodule update --remote $(istio_csr_submodule_dir)
-	git submodule update --remote $(cert_manager_submodule_dir)
-	git submodule update --remote $(cert_manager_operator_submodule_dir)
+	git submodule foreach --recursive 'git fetch -t'
+	cd $(cert_manager_submodule_dir); git checkout $(cert_manager_submodule_tag); cd - > /dev/null
+	cd $(cert_manager_operator_submodule_dir); git checkout $(cert_manager_operator_submodule_branch); cd - > /dev/null
+	cd $(istio_csr_submodule_dir); git checkout $(istio_csr_submodule_tag); cd - > /dev/null
 
 ## build all the images - operator, operand and operator-bundle.
 .PHONY: build-images
