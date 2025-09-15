@@ -32,6 +32,7 @@ LABEL com.redhat.component="cert-manager-operator-container" \
       description="cert-manager-operator-container" \
       vendor="Red Hat, Inc." \
       release="${RELEASE_VERSION}" \
+      cpe="cpe:/a:redhat:cert_manager:1.16::el9" \
       io.openshift.expose-services="" \
       io.openshift.build.commit.id="${COMMIT_SHA}" \
       io.openshift.build.source-location="${SOURCE_URL}" \
