@@ -57,6 +57,7 @@ LABEL com.redhat.component="cert-manager-operator-bundle-container" \
     io.openshift.tags="openshift,cert,cert-manager,cert-manager-operator,tls" \
     io.k8s.display-name="openshift-cert-manager-operator-bundle" \
     io.k8s.description="cert-manager-operator-bundle-container" \
+    cpe="cpe:/a:redhat:cert_manager:1.16::el9" \
     operators.operatorframework.io.bundle.mediatype.v1="registry+v1" \
     operators.operatorframework.io.bundle.manifests.v1=manifests/ \
     operators.operatorframework.io.bundle.metadata.v1=metadata/ \
