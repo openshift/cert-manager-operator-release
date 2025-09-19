@@ -37,6 +37,7 @@ ARG SOURCE_URL
 
 # Core bundle labels.
 LABEL com.redhat.component="cert-manager-operator-bundle-container" \
+      cpe="cpe:/a:redhat:cert_manager:1.14::el9" \
       name="cert-manager/cert-manager-operator-bundle" \
       summary="Cert Manager support for OpenShift" \
       description="Cert Manager support for OpenShift" \
@@ -65,6 +66,7 @@ LABEL com.redhat.component="cert-manager-operator-bundle-container" \
       operators.operatorframework.io.metrics.builder="operator-sdk-v1.25.1" \
       operators.operatorframework.io.metrics.mediatype.v1="metrics+v1" \
       operators.operatorframework.io.metrics.project_layout="go.kubebuilder.io/v3"
+
 
 # Labels for testing.
 LABEL operators.operatorframework.io.test.mediatype.v1=scorecard+v1 \
