@@ -42,6 +42,7 @@ LABEL com.redhat.component="jetstack-cert-manager-acmesolver-container" \
       description="jetstack-cert-manager-acmesolver-container" \
       vendor="Red Hat, Inc." \
       release="${RELEASE_VERSION}" \
+      cpe="cpe:/a:redhat:cert_manager:1.14::el9" \
       io.openshift.expose-services="" \
       io.openshift.tags="data,images,cert-manager-acmesolver" \
       io.openshift.build.commit.id="${COMMIT_SHA}" \
