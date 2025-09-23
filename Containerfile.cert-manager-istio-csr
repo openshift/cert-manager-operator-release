@@ -42,6 +42,7 @@ LABEL com.redhat.component="cert-manager-istio-csr-container" \
       io.openshift.build.source-location="${SOURCE_URL}" \
       io.openshift.build.commit.url="${SOURCE_URL}/commit/${COMMIT_SHA}" \
       io.k8s.display-name="cert-manager-istio-csr" \
-      io.k8s.description="cert-manager-istio-csr-container"
+      io.k8s.description="cert-manager-istio-csr-container" \
+      cpe="cpe:/a:redhat:cert_manager:1.16::el9"
 
 ENTRYPOINT ["/usr/local/bin/cert-manager-istio-csr"]
