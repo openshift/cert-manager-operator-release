@@ -39,6 +39,7 @@ LABEL com.redhat.component="cert-manager-operator-container" \
       io.openshift.maintainer.product="OpenShift Container Platform" \
       io.openshift.tags="data,images,operator,cert-manager" \
       io.k8s.display-name="openshift-cert-manager-operator" \
-      io.k8s.description="cert-manager-operator-container"
+      io.k8s.description="cert-manager-operator-container" \
+      cpe="cpe:/a:redhat:cert_manager:1.14::el9"
 
 ENTRYPOINT ["/usr/bin/cert-manager-operator"]
