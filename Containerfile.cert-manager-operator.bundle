@@ -47,6 +47,7 @@ LABEL com.redhat.component="cert-manager-operator-bundle-container" \
       url="${SOURCE_URL}" \
       maintainer="Red Hat, Inc." \
       vendor="Red Hat, Inc." \
+      cpe="cpe:/a:redhat:cert_manager:1.15::el9" \
       com.redhat.delivery.operator.bundle=true \
       com.redhat.openshift.versions="v4.14-v4.19" \
       io.openshift.expose-services="" \
