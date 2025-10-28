@@ -1,5 +1,5 @@
 ---
-image: registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:ae87422b389542277992f89c67de7b51ff40946351f7cf0d310df9e5d07ac91f
+image: registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:eb52b3a5ca06f7af8a073b48a1bf64edfe5561b5a311a202857b56a2e23d07da
 name: cert-manager-operator.v1.18.0
 package: openshift-cert-manager-operator
 properties:
@@ -259,7 +259,7 @@ properties:
             "kind": "IstioCSR",
             "metadata": {
               "annotations": {
-                "kubernetes.io/description": "Creating this resource requires the istio-csr tech-preview feature to be enabled, which otherwise has no effect. Please refer to the cert-manager documentation for more information on enabling the istio-csr feature. Technology Preview features are not supported with Red Hat production service level agreements (SLAs) and might not be functionally complete. Red Hat does not recommend using them in production. These features provide early access to upcoming product features, enabling customers to test functionality and provide feedback during the development process"
+                "kubernetes.io/description": "Resource behavior is managed through IstioCSR featuregate, which is enabled by default. Please refer to the cert-manager documentation for more information on the istio-csr feature."
               },
               "name": "default",
               "namespace": "istio-csr"
@@ -286,8 +286,8 @@ properties:
       capabilities: Seamless Upgrades
       categories: Security
       console.openshift.io/disable-operand-delete: "true"
-      containerImage: registry.stage.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:136431a689641032a800c9bdc198b54dd887abf565f07c2e9a8dd54611d7c8cc
-      createdAt: 2025-09-03T12:17:49
+      containerImage: registry.stage.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:5c2f39352dc743bb6f7dabe9b0b4b757f658c387240204d6874a845c9f7fa254
+      createdAt: 2025-10-28T07:13:53
       features.operators.openshift.io/cnf: "false"
       features.operators.openshift.io/cni: "false"
       features.operators.openshift.io/csi: "false"
@@ -316,10 +316,27 @@ properties:
     apiServiceDefinitions: {}
     crdDescriptions:
       owned:
-      - kind: CertificateRequest
+      - description: |-
+          A CertificateRequest is used to request a signed certificate from one of the
+          configured issuers.
+
+          All fields within the CertificateRequest's `spec` are immutable after creation.
+          A CertificateRequest will either succeed or fail, as denoted by its `Ready` status
+          condition and its `status.failureTime` field.
+
+          A CertificateRequest is a one-shot resource, meaning it represents a single
+          point in time request for a certificate and cannot be re-used.
+        displayName: CertificateRequest
+        kind: CertificateRequest
         name: certificaterequests.cert-manager.io
         version: v1
-      - kind: Certificate
+      - description: |-
+          A Certificate resource should be created to ensure an up to date and signed
+          X.509 certificate is stored in the Kubernetes Secret resource named in `spec.secretName`.
+
+          The stored certificate will be renewed before it expires (as configured by `spec.renewBefore`).
+        displayName: Certificate
+        kind: Certificate
         name: certificates.cert-manager.io
         version: v1
       - description: CertManager is the Schema for the certmanagers API
@@ -327,23 +344,47 @@ properties:
         kind: CertManager
         name: certmanagers.operator.openshift.io
         version: v1alpha1
-      - kind: Challenge
+      - description: Challenge is a type to represent a Challenge request with an
+          ACME server
+        displayName: Challenge
+        kind: Challenge
         name: challenges.acme.cert-manager.io
         version: v1
-      - kind: ClusterIssuer
+      - description: |-
+          A ClusterIssuer represents a certificate issuing authority which can be
+          referenced as part of `issuerRef` fields.
+          It is similar to an Issuer, however it is cluster-scoped and therefore can
+          be referenced by resources that exist in *any* namespace, not just the same
+          namespace as the referent.
+        displayName: ClusterIssuer
+        kind: ClusterIssuer
         name: clusterissuers.cert-manager.io
         version: v1
-      - kind: Issuer
+      - description: |-
+          An Issuer represents a certificate issuing authority which can be
+          referenced as part of `issuerRef` fields.
+          It is scoped to a single namespace and can therefore only be referenced by
+          resources within the same namespace.
+        displayName: Issuer
+        kind: Issuer
         name: issuers.cert-manager.io
         version: v1
-      - kind: IstioCSR
+      - description: |-
+          IstioCSR describes the configuration and information about the managed istio-csr agent.
+          The name must be `default` to make IstioCSR a singleton that is, to allow only one instance of IstioCSR per namespace.
+
+          When an IstioCSR is created, istio-csr agent is deployed in the IstioCSR-created namespace.
+        displayName: IstioCSR
+        kind: IstioCSR
         name: istiocsrs.operator.openshift.io
         version: v1alpha1
-      - kind: Order
+      - description: Order is a type to represent an Order with an ACME server
+        displayName: Order
+        kind: Order
         name: orders.acme.cert-manager.io
         version: v1
     description: |
-      The cert-manager Operator for Red Hat OpenShift provides seamless support for [cert-manager v1.18.2](https://github.com/cert-manager/cert-manager/tree/v1.18.2), which automates certificate management.
+      The cert-manager Operator for Red Hat OpenShift provides seamless support for [cert-manager v1.18.3](https://github.com/cert-manager/cert-manager/tree/v1.18.3), which automates certificate management.
       For more information, see the [cert-manager Operator for Red Hat OpenShift documentation](https://docs.openshift.com/container-platform/latest/security/cert_manager_operator/index.html).
     displayName: cert-manager Operator for Red Hat OpenShift
     installModes:
@@ -362,6 +403,7 @@ properties:
     - certificates
     - security
     - TLS
+    - istio-csr
     labels:
       operatorframework.io/arch.amd64: supported
       operatorframework.io/arch.arm64: supported
@@ -379,18 +421,18 @@ properties:
     provider:
       name: Red Hat
 relatedImages:
-- image: registry.stage.redhat.io/cert-manager/cert-manager-istio-csr-rhel9@sha256:b90f3e01f9901e015b351c2a89ca61e191413867b92e456a7fae4a4d0e0e2998
+- image: registry.stage.redhat.io/cert-manager/cert-manager-istio-csr-rhel9@sha256:3c6ba8179791cdf683a26adfdc12c39ca93d663b6916d306bea0cf0920efa3c7
   name: cert-manager-istiocsr
-- image: registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:ae87422b389542277992f89c67de7b51ff40946351f7cf0d310df9e5d07ac91f
+- image: registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:eb52b3a5ca06f7af8a073b48a1bf64edfe5561b5a311a202857b56a2e23d07da
   name: ""
-- image: registry.stage.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:136431a689641032a800c9bdc198b54dd887abf565f07c2e9a8dd54611d7c8cc
+- image: registry.stage.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:5c2f39352dc743bb6f7dabe9b0b4b757f658c387240204d6874a845c9f7fa254
   name: ""
-- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:25209c8ff1b8c03bd687775ddde802ab8de7211c5acd2bde5797aeedb3633239
+- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:1895f1e3887cd8a5d9759304dd116ccc155517a21f06c1c098b64cd96e4d6519
   name: cert-manager-acmesolver
-- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:18adbfbfebfeebfc95c390b9114efdcfbb5446ac3564ab0ca24d6cb0afb74fad
+- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:cfcb30d5e2a1f11330ebb0332fbd7d009f804cadaa1eea56f72b2008a707fc57
   name: cert-manager-webhook
-- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:18adbfbfebfeebfc95c390b9114efdcfbb5446ac3564ab0ca24d6cb0afb74fad
+- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:cfcb30d5e2a1f11330ebb0332fbd7d009f804cadaa1eea56f72b2008a707fc57
   name: cert-manager-ca-injector
-- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:18adbfbfebfeebfc95c390b9114efdcfbb5446ac3564ab0ca24d6cb0afb74fad
+- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:cfcb30d5e2a1f11330ebb0332fbd7d009f804cadaa1eea56f72b2008a707fc57
   name: cert-manager-controller
 schema: olm.bundle
