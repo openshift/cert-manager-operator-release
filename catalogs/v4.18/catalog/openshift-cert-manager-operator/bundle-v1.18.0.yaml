@@ -1,5 +1,5 @@
 ---
-image: registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:d63f0b73e062f2227e452dc3dfc7853e60bbfbc13dcd64d65326889537b3539c
+image: registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:fb0500fad940eb7ef1a7260fb9046c8e1037744c831df5091b00b563cf09e023
 name: cert-manager-operator.v1.18.0
 package: openshift-cert-manager-operator
 properties:
@@ -286,8 +286,8 @@ properties:
       capabilities: Seamless Upgrades
       categories: Security
       console.openshift.io/disable-operand-delete: "true"
-      containerImage: registry.stage.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:f733b7737338fcac1a36e4c59a8854841d9e5d72e5d78b7857000afa2f0b830d
-      createdAt: 2025-10-31T06:17:42
+      containerImage: registry.stage.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:fb599722d1b61770b302efe714beeda65a6fe1fcd7124d74eb5a2cd510468594
+      createdAt: 2025-11-05T09:53:21
       features.operators.openshift.io/cnf: "false"
       features.operators.openshift.io/cni: "false"
       features.operators.openshift.io/csi: "false"
@@ -423,9 +423,9 @@ properties:
 relatedImages:
 - image: registry.stage.redhat.io/cert-manager/cert-manager-istio-csr-rhel9@sha256:3c6ba8179791cdf683a26adfdc12c39ca93d663b6916d306bea0cf0920efa3c7
   name: cert-manager-istiocsr
-- image: registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:d63f0b73e062f2227e452dc3dfc7853e60bbfbc13dcd64d65326889537b3539c
+- image: registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:fb0500fad940eb7ef1a7260fb9046c8e1037744c831df5091b00b563cf09e023
   name: ""
-- image: registry.stage.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:f733b7737338fcac1a36e4c59a8854841d9e5d72e5d78b7857000afa2f0b830d
+- image: registry.stage.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:fb599722d1b61770b302efe714beeda65a6fe1fcd7124d74eb5a2cd510468594
   name: ""
 - image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:1895f1e3887cd8a5d9759304dd116ccc155517a21f06c1c098b64cd96e4d6519
   name: cert-manager-acmesolver
