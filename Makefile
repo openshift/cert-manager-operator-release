@@ -1,7 +1,10 @@
 ## local variables.
 cert_manager_submodule_dir = cert-manager
+cert_manager_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.jetstack-cert-manager.branch))
 cert_manager_operator_submodule_dir = cert-manager-operator
+cert_manager_operator_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.cert-manager-operator.branch))
 istio_csr_submodule_dir = cert-manager-istio-csr
+istio_csr_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.cert-manager-istio-csr.branch))
 cert_manager_containerfile_name = Containerfile.cert-manager
 cert_manager_acmesolver_containerfile_name = Containerfile.cert-manager.acmesolver
 cert_manager_operator_containerfile_name = Containerfile.cert-manager-operator
@@ -98,18 +101,16 @@ all: verify
 ## checkout submodules branch to match the parent branch.
 .PHONY: switch-submodules-branch
 switch-submodules-branch:
-	cd $(cert_manager_submodule_dir); git checkout $(CERT_MANAGER_BRANCH); cd - > /dev/null
-	cd $(cert_manager_operator_submodule_dir); git checkout $(CERT_MANAGER_OPERATOR_BRANCH); cd - > /dev/null
-	cd $(istio_csr_submodule_dir); git checkout $(ISTIO_CSR_BRANCH); cd - > /dev/null
 	# update with local cache.
-	git submodule update
+	git submodule update --recursive
 
 ## update submodules revision to match the revision of the origin repository.
 .PHONY: update-submodules
 update-submodules:
-	git submodule update --remote $(istio_csr_submodule_dir)
-	git submodule update --remote $(cert_manager_submodule_dir)
-	git submodule update --remote $(cert_manager_operator_submodule_dir)
+	git submodule foreach --recursive 'git fetch -t'
+	cd $(cert_manager_submodule_dir); git checkout origin/$(cert_manager_submodule_branch) && git pull origin $(cert_manager_submodule_branch); cd - > /dev/null
+	cd $(istio_csr_submodule_dir); git checkout origin/$(istio_csr_submodule_branch) && git pull origin $(istio_csr_submodule_branch); cd - > /dev/null
+	cd $(cert_manager_operator_submodule_dir); git checkout origin/$(cert_manager_operator_submodule_branch) && git pull origin $(cert_manager_operator_submodule_branch); cd - > /dev/null
 
 ## build all the images - operator, operand and operator-bundle.
 .PHONY: build-images
