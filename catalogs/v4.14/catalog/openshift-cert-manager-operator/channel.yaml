@@ -36,7 +36,6 @@ entries:
   replaces: cert-manager-operator.v1.15.1
   skipRange: '>=1.15.1 <1.16.0'
 - name: cert-manager-operator.v1.16.1
-  # Update this to new v1.15 z stream release, when added.
   replaces: cert-manager-operator.v1.15.1
   skipRange: '>=1.15.1 <1.16.1'
   skips:
@@ -172,6 +171,9 @@ entries:
 - name: cert-manager-operator.v1.15.1
   replaces: cert-manager-operator.v1.15.0
   skipRange: '>=1.15.0 <1.15.1'
+- name: cert-manager-operator.v1.15.2
+  replaces: cert-manager-operator.v1.15.1
+  skipRange: '>=1.15.1 <1.15.2'
 name: stable-v1.15
 package: openshift-cert-manager-operator
 schema: olm.channel
@@ -213,7 +215,6 @@ entries:
   replaces: cert-manager-operator.v1.15.1
   skipRange: '>=1.15.1 <1.16.0'
 - name: cert-manager-operator.v1.16.1
-  # Update this to new v1.15 z stream release, when added.
   replaces: cert-manager-operator.v1.15.1
   skipRange: '>=1.15.1 <1.16.1'
   skips:
