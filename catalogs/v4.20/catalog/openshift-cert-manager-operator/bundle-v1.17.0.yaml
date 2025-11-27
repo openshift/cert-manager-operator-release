@@ -56,7 +56,7 @@ properties:
             "apiVersion": "acme.cert-manager.io/v1",
             "kind": "Challenge",
             "metadata": {
-              "name": "tls-cert-sample",
+              "name": "tls-cert-sample-test",
               "namespace": "default"
             },
             "spec": {
