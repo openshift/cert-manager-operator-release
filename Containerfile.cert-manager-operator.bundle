@@ -30,7 +30,7 @@ RUN ./render_templates.sh /manifests /metadata \
     "${CERT_MANAGER_ACMESOLVER_IMAGE}" \
     "${CERT_MANAGER_ISTIOCSR_IMAGE}"
 
-FROM registry.redhat.io/rhel9-4-els/rhel-minimal:9.4
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:6fc28bcb6776e387d7a35a2056d9d2b985dc4e26031e98a2bd35a7137cd6fd71
 
 ARG RELEASE_VERSION
 ARG COMMIT_SHA
