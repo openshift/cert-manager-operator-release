@@ -38,6 +38,7 @@ ARG SOURCE_URL
 
 # Core bundle labels.
 LABEL com.redhat.component="cert-manager-operator-bundle-container" \
+      cpe="cpe:/a:redhat:cert_manager:1.18::el9" \
       name="cert-manager/cert-manager-operator-bundle" \
       summary="Cert Manager support for OpenShift" \
       description="Cert Manager support for OpenShift" \
