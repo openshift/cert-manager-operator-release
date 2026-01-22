@@ -8,14 +8,15 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "release-1.18" && (".tekton/jetstack-cert-manager-acmesolver-1-18-push.yaml".pathChanged() ||
-      "Containerfile.cert-manager.acmesolver".pathChanged() || "cert-manager/***".pathChanged())
+      == "release-1.19" && (".tekton/cert-manager-operator-bundle-1-19-push.yaml".pathChanged() ||
+      ".tekton/single-arch-build-pipeline.yaml".pathChanged() || "Containerfile.cert-manager-operator.bundle".pathChanged() ||
+      "hack/bundle/render_templates.sh".pathChanged() || "cert-manager-operator".pathChanged())
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: jetstack-cert-manager-1-18
-    appstudio.openshift.io/component: jetstack-cert-manager-acmesolver-1-18
+    appstudio.openshift.io/application: cert-manager-operator-1-19
+    appstudio.openshift.io/component: cert-manager-operator-bundle-1-19
     pipelines.appstudio.openshift.io/type: build
-  name: jetstack-cert-manager-acmesolver-1-18-on-push
+  name: cert-manager-operator-bundle-1-19-on-push
   namespace: cert-manager-oape-tenant
 spec:
   params:
@@ -24,22 +25,22 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/jetstack-cert-manager-1-18/jetstack-cert-manager-acmesolver-1-18:{{revision}}
+    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/cert-manager-operator-1-19/cert-manager-operator-bundle-1-19:{{revision}}
   - name: dockerfile
-    value: Containerfile.cert-manager.acmesolver
+    value: Containerfile.cert-manager-operator.bundle
   - name: path-context
     value: .
   - name: build-args
     value:
-    - RELEASE_VERSION=v1.18.3
+    - RELEASE_VERSION=v1.19.0
     - COMMIT_SHA={{revision}}
     - SOURCE_URL={{source_url}}
   - name: prefetch-input
-    value: '{"type": "gomod", "path": "cert-manager"}'
+    value: '{"type": "gomod", "path": "."}'
   pipelineRef:
-    name: multi-arch-build-pipeline
+    name: single-arch-build-pipeline
   taskRunTemplate:
-    serviceAccountName: build-pipeline-jetstack-cert-manager-acmesolver-1-18
+    serviceAccountName: build-pipeline-cert-manager-operator-bundle-1-19
   workspaces:
   - name: git-auth
     secret:
