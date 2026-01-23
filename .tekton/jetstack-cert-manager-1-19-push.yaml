@@ -8,14 +8,14 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "release-1.18" && (".tekton/jetstack-cert-manager-1-18-push.yaml".pathChanged() ||
-      "Containerfile.cert-manager".pathChanged() || "cert-manager/***".pathChanged())
+      == "release-1.19" && (".tekton/jetstack-cert-manager-1-19-push.yaml".pathChanged() ||
+      "Containerfile.cert-manager".pathChanged() || "cert-manager".pathChanged())
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: jetstack-cert-manager-1-18
-    appstudio.openshift.io/component: jetstack-cert-manager-1-18
+    appstudio.openshift.io/application: jetstack-cert-manager-1-19
+    appstudio.openshift.io/component: jetstack-cert-manager-1-19
     pipelines.appstudio.openshift.io/type: build
-  name: jetstack-cert-manager-1-18-on-push
+  name: jetstack-cert-manager-1-19-on-push
   namespace: cert-manager-oape-tenant
 spec:
   params:
@@ -24,14 +24,14 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/jetstack-cert-manager-1-18/jetstack-cert-manager-1-18:{{revision}}
+    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/jetstack-cert-manager-1-19/jetstack-cert-manager-1-19:{{revision}}
   - name: dockerfile
     value: Containerfile.cert-manager
   - name: path-context
     value: .
   - name: build-args
     value:
-    - RELEASE_VERSION=v1.18.3
+    - RELEASE_VERSION=v1.19.2
     - COMMIT_SHA={{revision}}
     - SOURCE_URL={{source_url}}
   - name: prefetch-input
@@ -39,7 +39,7 @@ spec:
   pipelineRef:
     name: multi-arch-build-pipeline
   taskRunTemplate:
-    serviceAccountName: build-pipeline-jetstack-cert-manager-1-18
+    serviceAccountName: build-pipeline-jetstack-cert-manager-1-19
   workspaces:
   - name: git-auth
     secret:
