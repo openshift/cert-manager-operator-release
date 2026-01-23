@@ -1,12 +1,12 @@
 [submodule "jetstack-cert-manager"]
 	path = cert-manager
 	url = https://github.com/openshift/jetstack-cert-manager.git
-	tag = v1.18.3
+	tag = v1.19.2
 [submodule "cert-manager-operator"]
 	path = cert-manager-operator
 	url = https://github.com/openshift/cert-manager-operator.git
-	branch = cert-manager-1.18
+	branch = master
 [submodule "cert-manager-istio-csr"]
 	path = cert-manager-istio-csr
 	url = https://github.com/openshift/cert-manager-istio-csr
-	tag = v0.14.2
+	tag = v0.15.0

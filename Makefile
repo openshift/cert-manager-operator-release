@@ -14,7 +14,6 @@ commit_sha = $(strip $(shell git rev-parse HEAD))
 source_url = $(strip $(shell git remote get-url origin))
 release_version = v$(strip $(shell git branch --show-current | cut -d'-' -f2))
 
-
 ## validate that tags and branches are not empty
 ifeq ($(cert_manager_submodule_tag),)
 $(error cert_manager_submodule_tag is empty.)
@@ -120,9 +119,9 @@ switch-submodules-branch:
 .PHONY: update-submodules
 update-submodules:
 	git submodule foreach --recursive 'git fetch -t'
-	cd $(cert_manager_submodule_dir); git checkout $(cert_manager_submodule_tag); cd - > /dev/null
-	cd $(istio_csr_submodule_dir); git checkout $(istio_csr_submodule_tag); cd - > /dev/null
-	cd $(cert_manager_operator_submodule_dir); git checkout $(cert_manager_operator_submodule_branch) && git pull origin $(cert_manager_operator_submodule_branch); cd - > /dev/null
+	cd $(cert_manager_submodule_dir) && git checkout $(cert_manager_submodule_tag) && cd - > /dev/null
+	cd $(istio_csr_submodule_dir) && git checkout $(istio_csr_submodule_tag) && cd - > /dev/null
+	cd $(cert_manager_operator_submodule_dir) && git checkout $(cert_manager_operator_submodule_branch) && git pull origin $(cert_manager_operator_submodule_branch) && cd - > /dev/null
 
 ## build all the images - operator, operand and operator-bundle.
 .PHONY: build-images
