@@ -8,12 +8,12 @@ COPY --chmod=0550 hack/bundle/render_templates.sh /render_templates.sh
 
 # Below image versions are used for replacing the image references in the operator CSV.
 # For image builds through konflux, konflux-bot will update the references.
-ARG CERT_MANAGER_OPERATOR_IMAGE=registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:9cee274a2641344a415b5e5ae6f877ea7afad84a70e51172bcb2091e7c34d754 \
-    CERT_MANAGER_WEBHOOK_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:b88eaa1d06c6ef00b1a2a3ff6e8f3fa394c59c0e10f8ff09a40a73c33a7cdefd \
-    CERT_MANAGER_CA_INJECTOR_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:b88eaa1d06c6ef00b1a2a3ff6e8f3fa394c59c0e10f8ff09a40a73c33a7cdefd \
-    CERT_MANAGER_CONTROLLER_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:b88eaa1d06c6ef00b1a2a3ff6e8f3fa394c59c0e10f8ff09a40a73c33a7cdefd \
-    CERT_MANAGER_ACMESOLVER_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:1ea1f60dc7c25ec41863d8f173ed3a754208574dc540180adc312b157d42b5a5 \
-    CERT_MANAGER_ISTIOCSR_IMAGE=registry.redhat.io/cert-manager/cert-manager-istio-csr-rhel9@sha256:20de32b9dc76d7d6f2951f8409385501801919992c224bd19c9e6e3694f7daef
+ARG CERT_MANAGER_OPERATOR_IMAGE=registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:99526f5a179816df1f7f51df0517136b247d815b7bdce0a5d0eb7cdaf4b5ce7a \
+    CERT_MANAGER_WEBHOOK_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:903ce74138b1ffc735846a7c5fcdf62bbe82ca29568a6b38caec2656f6637671 \
+    CERT_MANAGER_CA_INJECTOR_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:903ce74138b1ffc735846a7c5fcdf62bbe82ca29568a6b38caec2656f6637671 \
+    CERT_MANAGER_CONTROLLER_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:903ce74138b1ffc735846a7c5fcdf62bbe82ca29568a6b38caec2656f6637671 \
+    CERT_MANAGER_ACMESOLVER_IMAGE=registry.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:38899dcd99bcd1c8c8d2c67cd19d5b1756434028ed2f1b926a282723bd63183e \
+    CERT_MANAGER_ISTIOCSR_IMAGE=registry.redhat.io/cert-manager/cert-manager-istio-csr-rhel9@sha256:fb89adfcc4bcdaf21bed27dbc90586fb2b32180259b9f9d6fcf84a38e401fe03
 
 ENV GO_BUILD_TAGS=strictfipsruntime,openssl
 ENV GOEXPERIMENT=strictfipsruntime
