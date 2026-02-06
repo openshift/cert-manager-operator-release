@@ -1,0 +1,48 @@
+FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_9_golang_1.24 AS builder
+
+ARG SOURCE_DIR="/go/src/github.com/openshift/cert-manager-trust-manager"
+
+COPY trust-manager $SOURCE_DIR
+COPY trust-manager/LICENSE /licenses/
+
+ENV GO_BUILD_TAGS=strictfipsruntime,openssl
+ENV GOEXPERIMENT=strictfipsruntime
+ENV CGO_ENABLED=1
+ENV GOFLAGS=""
+
+RUN cd $SOURCE_DIR/cmd/trust-manager && go build -o $SOURCE_DIR/_output/cert-manager-trust-manager -ldflags '-w -s' -tags ${GO_BUILD_TAGS} main.go
+
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:ecd4751c45e076b4e1e8d37ac0b1b9c7271930c094d1bcc5e6a4d6954c6b2289
+
+# Values for below ARGs will passed from tekton configs for konflux builds.
+## Release version of the cert-manager source code used in the build.
+ARG RELEASE_VERSION
+## Commit hash that considered for the image build.
+ARG COMMIT_SHA
+## github URL of the cert-manager source repository.
+ARG SOURCE_URL
+ARG SOURCE_DIR="/go/src/github.com/openshift/cert-manager-trust-manager"
+
+COPY --from=builder $SOURCE_DIR/_output/cert-manager-trust-manager /usr/local/bin/cert-manager-trust-manager
+COPY --from=builder /licenses /licenses
+
+USER 65534:65534
+
+LABEL com.redhat.component="cert-manager-trust-manager-container" \
+      cpe="cpe:/a:redhat:cert_manager:1.19::el9" \
+      name="cert-manager/cert-manager-trust-manager-rhel9" \
+      version="${RELEASE_VERSION}" \
+      summary="cert-manager-trust-manager" \
+      maintainer="Red Hat, Inc." \
+      description="cert-manager-trust-manager-container" \
+      vendor="Red Hat, Inc." \
+      release="${RELEASE_VERSION}" \
+      io.openshift.expose-services="" \
+      io.openshift.tags="data,images,cert-manager-trust-manager" \
+      io.openshift.build.commit.id="${COMMIT_SHA}" \
+      io.openshift.build.source-location="${SOURCE_URL}" \
+      io.openshift.build.commit.url="${SOURCE_URL}/commit/${COMMIT_SHA}" \
+      io.k8s.display-name="cert-manager-trust-manager" \
+      io.k8s.description="cert-manager-trust-manager-container"
+
+ENTRYPOINT ["/usr/local/bin/cert-manager-trust-manager"]

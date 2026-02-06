@@ -8,5 +8,9 @@
 	branch = master
 [submodule "cert-manager-istio-csr"]
 	path = cert-manager-istio-csr
-	url = https://github.com/openshift/cert-manager-istio-csr
+	url = https://github.com/openshift/cert-manager-istio-csr.git
 	tag = v0.15.0
+[submodule "cert-manager-trust-manager"]
+	path = trust-manager
+	url = https://github.com/openshift/cert-manager-trust-manager.git
+	tag = v0.20.3
