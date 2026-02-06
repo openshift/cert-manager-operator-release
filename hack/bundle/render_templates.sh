@@ -1,63 +1,55 @@
 #!/usr/bin/env bash
 
-set -x
+set -o nounset
+set -o pipefail
+set -o errexit
 
-declare MANIFESTS_DIR
-declare METADATA_DIR
-declare CERT_MANAGER_OPERATOR_IMAGE
-declare CERT_MANAGER_WEBHOOK_IMAGE
-declare CERT_MANAGER_CA_INJECTOR_IMAGE
-declare CERT_MANAGER_CONTROLLER_IMAGE
-declare CERT_MANAGER_ACMESOLVER_IMAGE
-declare CERT_MANAGER_ISTIOCSR_IMAGE
+[[ "${DEBUG:-}" == "true" ]] && set -x
 
-CSV_FILE_NAME="cert-manager-operator.clusterserviceversion.yaml"
-ANNOTATIONS_FILE_NAME="annotations.yaml"
+readonly CSV_FILE_NAME="cert-manager-operator.clusterserviceversion.yaml"
+readonly ANNOTATIONS_FILE_NAME="annotations.yaml"
 
-update_csv_manifest()
-{
-	CSV_FILE="${MANIFESTS_DIR}/${CSV_FILE_NAME}"
-	if [[ ! -f "${CSV_FILE}" ]]; then
-		echo "[$(date)] -- ERROR -- operator csv file \"${CSV_FILE}\" does not exist"
+log_info()  { echo "[$(date)] -- INFO  -- $*"; }
+log_error() { echo "[$(date)] -- ERROR -- $*" >&2; }
+
+update_csv_manifest() {
+	local csv_file="${MANIFESTS_DIR}/${CSV_FILE_NAME}"
+	if [[ ! -f "${csv_file}" ]]; then
+		log_error "operator csv file \"${csv_file}\" does not exist"
 		exit 1
 	fi
 
-	## replace cert-manager operand related images
-	sed -i "s#quay.io/jetstack/cert-manager-webhook.*#${CERT_MANAGER_WEBHOOK_IMAGE}#g" "${CSV_FILE}"
-	sed -i "s#quay.io/jetstack/cert-manager-controller.*#${CERT_MANAGER_CONTROLLER_IMAGE}#g" "${CSV_FILE}"
-	sed -i "s#quay.io/jetstack/cert-manager-cainjector.*#${CERT_MANAGER_CA_INJECTOR_IMAGE}#g" "${CSV_FILE}"
-	sed -i "s#quay.io/jetstack/cert-manager-acmesolver.*#${CERT_MANAGER_ACMESOLVER_IMAGE}#g" "${CSV_FILE}"
-	sed -i "s#quay.io/jetstack/cert-manager-istio-csr.*#${CERT_MANAGER_ISTIOCSR_IMAGE}#g" "${CSV_FILE}"
+	## replace operator and operand images in the CSV manifest.
+	sed -i \
+	  -e "s#openshift.io/cert-manager-operator.*#${CERT_MANAGER_OPERATOR_IMAGE}#g" \
+		-e "s#quay.io/jetstack/cert-manager-webhook.*#${CERT_MANAGER_WEBHOOK_IMAGE}#g" \
+		-e "s#quay.io/jetstack/cert-manager-controller.*#${CERT_MANAGER_CONTROLLER_IMAGE}#g" \
+		-e "s#quay.io/jetstack/cert-manager-cainjector.*#${CERT_MANAGER_CA_INJECTOR_IMAGE}#g" \
+		-e "s#quay.io/jetstack/cert-manager-acmesolver.*#${CERT_MANAGER_ACMESOLVER_IMAGE}#g" \
+		-e "s#quay.io/jetstack/cert-manager-istio-csr.*#${CERT_MANAGER_ISTIOCSR_IMAGE}#g" \
+		-e "s#quay.io/jetstack/trust-manager.*#${TRUST_MANAGER_IMAGE}#g" \
+		"${csv_file}"
 
-	## replace cert-manager-operator image
-	sed -i "s#openshift.io/cert-manager-operator.*#${CERT_MANAGER_OPERATOR_IMAGE}#g" "${CSV_FILE}"
-
-	## add annotations
-	yq e -i ".metadata.annotations.createdAt=\"$(date -u +'%Y-%m-%dT%H:%M:%S')\"" "${CSV_FILE}"
+	## update annotations in CSV manifest.
+	yq e -i ".metadata.annotations.createdAt=\"$(date -u +'%Y-%m-%dT%H:%M:%S')\"" "${csv_file}"
 }
 
 update_annotations_metadata() {
-	ANNOTATION_FILE="${METADATA_DIR}/${ANNOTATIONS_FILE_NAME}"
-	if [[ ! -f ${ANNOTATION_FILE} ]]; then
-		echo "[$(date)] -- ERROR -- annotations metadata file \"${CSV_FILE}\" does not exist"
+	local annotation_file="${METADATA_DIR}/${ANNOTATIONS_FILE_NAME}"
+	if [[ ! -f "${annotation_file}" ]]; then
+		log_error "annotations metadata file \"${annotation_file}\" does not exist"
 		exit 1
 	fi
 
-	# add annotations
-	yq e -i '.annotations."operators.operatorframework.io.bundle.package.v1"="openshift-cert-manager-operator"' "${ANNOTATION_FILE}"
+	# update annotations.
+	yq e -i '.annotations."operators.operatorframework.io.bundle.package.v1"="openshift-cert-manager-operator"' "${annotation_file}"
 }
 
-usage()
-{
+usage() {
 	echo -e "usage:\n\t$(basename "${BASH_SOURCE[0]}")" \
 		'"<MANIFESTS_DIR>"' \
 		'"<METADATA_DIR>"' \
-		'"<CERT_MANAGER_OPERATOR_IMAGE>"' \
-		'"<CERT_MANAGER_WEBHOOK_IMAGE>"' \
-		'"<CERT_MANAGER_CA_INJECTOR_IMAGE>"' \
-		'"<CERT_MANAGER_CONTROLLER_IMAGE>"' \
-		'"<CERT_MANAGER_ACMESOLVER_IMAGE>"' \
-		'"<CERT_MANAGER_ISTIOCSR_IMAGE>"'
+		'"<IMAGES_DIGEST_CONF_FILE>"'
 	exit 1
 }
 
@@ -65,30 +57,39 @@ usage()
 ###############  MAIN  #######################
 ##############################################
 
-if [[ $# -lt 8 ]]; then
+if [[ $# -ne 3 ]]; then
 	usage
 fi
 
-MANIFESTS_DIR=$1
-METADATA_DIR=$2
-CERT_MANAGER_OPERATOR_IMAGE=$3
-CERT_MANAGER_WEBHOOK_IMAGE=$4
-CERT_MANAGER_CA_INJECTOR_IMAGE=$5
-CERT_MANAGER_CONTROLLER_IMAGE=$6
-CERT_MANAGER_ACMESOLVER_IMAGE=$7
-CERT_MANAGER_ISTIOCSR_IMAGE=$8
+declare -r MANIFESTS_DIR=$1
+declare -r METADATA_DIR=$2
+declare -r IMAGES_DIGEST_CONF_FILE=$3
 
-echo "[$(date)] -- INFO  -- $*"
+log_info "$*"
 
-if [[ ! -d ${MANIFESTS_DIR} ]]; then
-	echo "[$(date)] -- ERROR -- manifests directory \"${MANIFESTS_DIR}\" does not exist"
-	exit 1
-fi
+[[ -d "${MANIFESTS_DIR}" ]] || { log_error "manifests directory \"${MANIFESTS_DIR}\" does not exist"; exit 1; }
+[[ -d "${METADATA_DIR}" ]] || { log_error "metadata directory \"${METADATA_DIR}\" does not exist"; exit 1; }
+[[ -f "${IMAGES_DIGEST_CONF_FILE}" ]] || { log_error "image digests conf file \"${IMAGES_DIGEST_CONF_FILE}\" does not exist"; exit 1; }
 
-if [[ ! -d ${METADATA_DIR} ]]; then
-	echo "[$(date)] -- ERROR -- metadata directory \"${METADATA_DIR}\" does not exist"
-	exit 1
-fi
+# shellcheck source=/dev/null
+source "${IMAGES_DIGEST_CONF_FILE}"
+
+required_images=(
+	CERT_MANAGER_OPERATOR_IMAGE
+	CERT_MANAGER_WEBHOOK_IMAGE
+	CERT_MANAGER_CA_INJECTOR_IMAGE
+	CERT_MANAGER_CONTROLLER_IMAGE
+	CERT_MANAGER_ACMESOLVER_IMAGE
+	CERT_MANAGER_ISTIOCSR_IMAGE
+	TRUST_MANAGER_IMAGE
+)
+
+for img_var in "${required_images[@]}"; do
+	if [[ -z "${!img_var:-}" ]]; then
+		log_error "required image variable ${img_var} is not set"
+		exit 1
+	fi
+done
 
 update_csv_manifest
 update_annotations_metadata

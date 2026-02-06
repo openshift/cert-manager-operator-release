@@ -4,16 +4,8 @@ COPY cert-manager-operator/bundle/manifests /manifests
 COPY cert-manager-operator/bundle/metadata /metadata
 COPY cert-manager-operator/bundle/tests/scorecard /tests/scorecard
 COPY cert-manager-operator/LICENSE /licenses/
+COPY images_digest.conf /images_digest.conf
 COPY --chmod=0550 hack/bundle/render_templates.sh /render_templates.sh
-
-# Below image versions are used for replacing the image references in the operator CSV.
-# For image builds through konflux, konflux-bot will update the references.
-ARG CERT_MANAGER_OPERATOR_IMAGE=registry.stage.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:be1e0621083fb82a82321875988bc3efbd14b24349e48ffb1c2bbd4858257433 \
-    CERT_MANAGER_WEBHOOK_IMAGE=registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:dfafd97d53c7c964aa19bd273aec4e437ec2b95ed5ec996ceb01819d2c91ccbc \
-    CERT_MANAGER_CA_INJECTOR_IMAGE=registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:dfafd97d53c7c964aa19bd273aec4e437ec2b95ed5ec996ceb01819d2c91ccbc \
-    CERT_MANAGER_CONTROLLER_IMAGE=registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:dfafd97d53c7c964aa19bd273aec4e437ec2b95ed5ec996ceb01819d2c91ccbc \
-    CERT_MANAGER_ACMESOLVER_IMAGE=registry.stage.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:e2499fe2ca342f7f89e55fc36b7b4d7ae60286bce6cca69dc32e5549b26c5459 \
-    CERT_MANAGER_ISTIOCSR_IMAGE=registry.stage.redhat.io/cert-manager/cert-manager-istio-csr-rhel9@sha256:1901472d7a69bf4f2d52432c341fb0500279bec18fb5acec5ab3e8edd73faa31
 
 ENV GO_BUILD_TAGS=strictfipsruntime,openssl
 ENV GOEXPERIMENT=strictfipsruntime
@@ -22,13 +14,7 @@ ENV GOFLAGS=""
 
 COPY tools.go go.mod go.sum /
 RUN go build -o /usr/bin/yq github.com/mikefarah/yq/v4 && chmod +x /usr/bin/yq
-RUN ./render_templates.sh /manifests /metadata \
-    "${CERT_MANAGER_OPERATOR_IMAGE}" \
-    "${CERT_MANAGER_WEBHOOK_IMAGE}" \
-    "${CERT_MANAGER_CA_INJECTOR_IMAGE}" \
-    "${CERT_MANAGER_CONTROLLER_IMAGE}" \
-    "${CERT_MANAGER_ACMESOLVER_IMAGE}" \
-    "${CERT_MANAGER_ISTIOCSR_IMAGE}"
+RUN ./render_templates.sh /manifests /metadata /images_digest.conf
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:759f5f42d9d6ce2a705e290b7fc549e2d2cd39312c4fa345f93c02e4abb8da95
 
@@ -55,7 +41,7 @@ LABEL com.redhat.component="cert-manager-operator-bundle-container" \
       io.openshift.build.source-location="${SOURCE_URL}" \
       io.openshift.build.commit.url="${SOURCE_URL}/commit/${COMMIT_SHA}" \
       io.openshift.maintainer.product="OpenShift Container Platform" \
-      io.openshift.tags="openshift,cert,cert-manager,cert-manager-operator,tls,istio-csr" \
+      io.openshift.tags="openshift,cert,cert-manager,cert-manager-operator,tls,istio-csr,trust-manager" \
       io.k8s.display-name="openshift-cert-manager-operator-bundle" \
       io.k8s.description="cert-manager-operator-bundle-container" \
       operators.operatorframework.io.bundle.mediatype.v1="registry+v1" \
