@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
-declare -a CONTAINERFILES
-declare -a CERT_MANAGER_OPERATOR_CONTAINERFILES
+set -o nounset
+set -o pipefail
+set -o errexit
+
+declare -a CONTAINERFILES=()
+declare -a CERT_MANAGER_OPERATOR_CONTAINERFILES=()
 
 linter()
 {
@@ -24,7 +28,7 @@ containerfile_linter()
 		linter "${CONTAINERFILES[@]}"
 		return
 	fi
-	mapfile -t CERT_MANAGER_OPERATOR_CONTAINERFILES < <(find . -type f -name 'Containerfile*' '!' -path './cert-manager/*' '!' -path './cert-manager-operator/*' '!' -path './cert-manager-istio-csr/*')
+	mapfile -t CERT_MANAGER_OPERATOR_CONTAINERFILES < <(find . -type f -name 'Containerfile*' '!' -path './cert-manager/*' '!' -path './cert-manager-operator/*' '!' -path './cert-manager-istio-csr/*' '!' -path './trust-manager/*')
 	echo "[$(date)] -- INFO  -- running linter on ${CERT_MANAGER_OPERATOR_CONTAINERFILES[*]}"
 	linter "${CERT_MANAGER_OPERATOR_CONTAINERFILES[@]}"
 }

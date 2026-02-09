@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+set -o nounset
+set -o pipefail
+set -o errexit
+
 validate_config()
 {
 	if ! podman run -e "LOG_LEVEL=debug" --rm -v "./renovate.json:/tmp/validate/renovate.json" ghcr.io/renovatebot/renovate \
