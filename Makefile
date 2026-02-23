@@ -5,11 +5,14 @@ cert_manager_operator_submodule_dir = cert-manager-operator
 cert_manager_operator_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.cert-manager-operator.branch))
 istio_csr_submodule_dir = cert-manager-istio-csr
 istio_csr_submodule_tag = $(strip $(shell git config -f .gitmodules submodule.cert-manager-istio-csr.tag))
+trust_manager_submodule_dir = trust-manager
+trust_manager_submodule_tag = $(strip $(shell git config -f .gitmodules submodule.cert-manager-trust-manager.tag))
 cert_manager_containerfile_name = Containerfile.cert-manager
 cert_manager_acmesolver_containerfile_name = Containerfile.cert-manager.acmesolver
 cert_manager_operator_containerfile_name = Containerfile.cert-manager-operator
 cert_manager_operator_bundle_containerfile_name = Containerfile.cert-manager-operator.bundle
 istio_csr_containerfile_name = Containerfile.cert-manager-istio-csr
+trust_manager_containerfile_name = Containerfile.cert-manager-trust-manager
 commit_sha = $(strip $(shell git rev-parse HEAD))
 source_url = $(strip $(shell git remote get-url origin))
 release_version = v$(strip $(shell git branch --show-current | cut -d'-' -f2))
@@ -24,34 +27,8 @@ endif
 ifeq ($(istio_csr_submodule_tag),)
 $(error istio_csr_submodule_tag is empty.)
 endif
-
-## cert-manager-operator-release and cert-manager follow same naming for release
-## branches except for cert-manager-operator which has release version as suffix in
-## the branch name like in aforementioned repositories, which will be used for
-## deriving the submodules branch.
-PARENT_BRANCH_SUFFIX = $(strip $(shell git branch --show-current | cut -d'-' -f2))
-
-## current branch name of the cert-manager submodule.
-CERT_MANAGER_BRANCH ?= release-$(PARENT_BRANCH_SUFFIX)
-## check if the parent module branch is main and assign the equivalent cert-manager
-## branch instead of deriving the branch name.
-ifeq ($(PARENT_BRANCH_SUFFIX), main)
-CERT_MANAGER_BRANCH = master
-endif
-
-## current branch name of the cert-manager-operator submodule.
-CERT_MANAGER_OPERATOR_BRANCH ?= cert-manager-$(PARENT_BRANCH_SUFFIX)
-## check if the parent module branch is main and assign the equivalent cert-manager-operator
-## branch instead of deriving the branch name.
-ifeq ($(PARENT_BRANCH_SUFFIX), main)
-CERT_MANAGER_OPERATOR_BRANCH = master
-endif
-
-## current branch name of the istio-csr submodule.
-ISTIO_CSR_BRANCH ?= release-$(PARENT_BRANCH_SUFFIX)
-
-ifeq ($(PARENT_BRANCH_SUFFIX), main)
-ISTIO_CSR_BRANCH = main
+ifeq ($(trust_manager_submodule_tag),)
+$(error trust_manager_submodule_tag is empty.)
 endif
 
 ## container build tool to use for creating images.
@@ -69,17 +46,14 @@ CERT_MANAGER_IMAGE ?= cert-manager
 ## image name for cert-manager-acmesolver.
 CERT_MANAGER_ACMESOLVER_IMAGE ?= cert-manager-acmesolver
 
-## image version to tag the created images with.
-IMAGE_VERSION ?= $(release_version)
-
 ## image for istio-csr
 ISTIO_CSR_IMAGE ?= cert-manager-istio-csr
 
-## image tag makes use of the branch name and
-## when branch name is `main` use `latest` as the tag.
-ifeq ($(PARENT_BRANCH_SUFFIX), main)
-IMAGE_VERSION = latest
-endif
+## image for trust-manager
+TRUST_MANAGER_IMAGE ?= cert-manager-trust-manager
+
+## image version tag for the all images created.
+IMAGE_VERSION ?= v1.19.0
 
 ## args to pass during image build
 IMAGE_BUILD_ARGS ?= --build-arg RELEASE_VERSION=$(release_version) --build-arg COMMIT_SHA=$(commit_sha) --build-arg SOURCE_URL=$(source_url)
@@ -121,6 +95,7 @@ update-submodules:
 	git submodule foreach --recursive 'git fetch -t'
 	cd $(cert_manager_submodule_dir) && git checkout $(cert_manager_submodule_tag) && cd - > /dev/null
 	cd $(istio_csr_submodule_dir) && git checkout $(istio_csr_submodule_tag) && cd - > /dev/null
+	cd $(trust_manager_submodule_dir) && git checkout $(trust_manager_submodule_tag) && cd - > /dev/null
 	cd $(cert_manager_operator_submodule_dir) && git checkout $(cert_manager_operator_submodule_branch) && git pull origin $(cert_manager_operator_submodule_branch) && cd - > /dev/null
 
 ## build all the images - operator, operand and operator-bundle.
@@ -134,7 +109,7 @@ build-operator-image:
 
 ## build all operand images
 .PHONY: build-operand-images
-build-operand-images: build-cert-manager-image build-cert-manager-acmesolver-image build-istio-csr-image
+build-operand-images: build-cert-manager-image build-cert-manager-acmesolver-image build-istio-csr-image build-trust-manager-image
 
 ## build operator bundle image.
 .PHONY: build-bundle-image
@@ -155,6 +130,11 @@ build-cert-manager-acmesolver-image:
 .PHONY: build-istio-csr-image
 build-istio-csr-image:
 	$(IMAGE_BUILD_CMD) -f $(istio_csr_containerfile_name) -t $(ISTIO_CSR_IMAGE):$(IMAGE_VERSION) .
+
+## build operand trust-manager image.
+.PHONY: build-trust-manager-image
+build-trust-manager-image:
+	$(IMAGE_BUILD_CMD) -f $(trust_manager_containerfile_name) -t $(TRUST_MANAGER_IMAGE):$(IMAGE_VERSION) .
 
 ## check shell scripts.
 .PHONY: verify-shell-scripts
@@ -180,10 +160,11 @@ clean:
 	$(CONTAINER_ENGINE) rmi -i $(CERT_MANAGER_OPERATOR_IMAGE):$(IMAGE_VERSION) \
 $(CERT_MANAGER_IMAGE):$(IMAGE_VERSION) \
 $(CERT_MANAGER_ACMESOLVER_IMAGE):$(IMAGE_VERSION) \
-$(CERT_MANAGER_OPERATOR_BUNDLE_IMAGE):$(IMAGE_VERSION)
+$(CERT_MANAGER_OPERATOR_BUNDLE_IMAGE):$(IMAGE_VERSION) \
+$(ISTIO_CSR_IMAGE):$(IMAGE_VERSION) \
+$(TRUST_MANAGER_IMAGE):$(IMAGE_VERSION)
 
 ## validate renovate config.
 .PHONY: validate-renovate-config
 validate-renovate-config:
 	./hack/renovate-config-validator.sh
-

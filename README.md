@@ -2,7 +2,7 @@
 
 This repository holds release specific content for cert-manager-operator mainly the Containerfiles which comply with the
 requirements for releasing builds through konflux. Repository also holds tekton configuration code added by konflux bots
-and cert-manager-operator and operand's(cert-manager) repositories are added as git submodules.
+and cert-manager-operator and operand's(cert-manager, istio-csr, trust-manager) repositories are added as git submodules.
 
 ## Getting started
 
@@ -27,6 +27,7 @@ outside the main code repository for better management.
 - [cert-manager-operator](https://github.com/openshift/cert-manager-operator)
 - [cert-manager](https://github.com/openshift/jetstack-cert-manager)
 - [cert-manager-istio-csr](https://github.com/openshift/cert-manager-istio-csr)
+- [trust-manager](https://github.com/openshift/cert-manager-trust-manager)
 
 In each release branch the git submodules are configured with equivalent release branch in their respective origin
 repositories. And when switching the parent repository between different branches, the submodule branches will not be
