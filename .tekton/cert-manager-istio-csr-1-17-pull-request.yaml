@@ -10,7 +10,7 @@ metadata:
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
       == "release-1.17" && (".tekton/cert-manager-istio-csr-1-17-pull-request.yaml".pathChanged() ||
-      "Containerfile.cert-manager-istio-csr".pathChanged() || "cert-manager-istio-csr/***".pathChanged())
+      "Containerfile.cert-manager-istio-csr".pathChanged() || "cert-manager-istio-csr".pathChanged())
   creationTimestamp: null
   labels:
     appstudio.openshift.io/application: cert-manager-istio-csr-1-17
