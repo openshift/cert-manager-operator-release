@@ -18,7 +18,7 @@ For example, below configuration is for triggering builds only when build trigge
 and the branch is `release-1.15` and following files are updated `.tekton/jetstack-cert-manager-acmesolver-1-15-pull-request.yaml`,
 `Containerfile.cert-manager.acmesolver` or when directory `cert-manager` is updated.
 ```
-pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch == "release-1.15" && (".tekton/jetstack-cert-manager-acmesolver-1-15-pull-request.yaml".pathChanged() || "Containerfile.cert-manager.acmesolver".pathChanged() || "cert-manager/***".pathChanged())
+pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch == "release-1.15" && (".tekton/jetstack-cert-manager-acmesolver-1-15-pull-request.yaml".pathChanged() || "Containerfile.cert-manager.acmesolver".pathChanged() || "cert-manager".pathChanged())
 ```
 
 ### Configure required architectures the images should be built for as build parameter.
