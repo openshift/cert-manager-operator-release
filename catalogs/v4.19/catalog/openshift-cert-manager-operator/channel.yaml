@@ -17,12 +17,9 @@ entries:
 - name: cert-manager-operator.v1.17.0
   replaces: cert-manager-operator.v1.16.1
   skipRange: '>=1.16.1 <1.17.0'
-- name: cert-manager-operator.v1.17.1
-  replaces: cert-manager-operator.v1.17.0
-  skipRange: '>=1.17.0 <1.17.1'
 - name: cert-manager-operator.v1.18.0
-  replaces: cert-manager-operator.v1.17.1
-  skipRange: '>=1.17.1 <1.18.0'
+  replaces: cert-manager-operator.v1.17.0
+  skipRange: '>=1.17.0 <1.18.0'
 - name: cert-manager-operator.v1.18.1
   replaces: cert-manager-operator.v1.18.0
   skipRange: '>=1.18.0 <1.18.1'
@@ -112,12 +109,9 @@ entries:
 - name: cert-manager-operator.v1.17.0
   replaces: cert-manager-operator.v1.16.1
   skipRange: '>=1.16.1 <1.17.0'
-- name: cert-manager-operator.v1.17.1
-  replaces: cert-manager-operator.v1.17.0
-  skipRange: '>=1.17.0 <1.17.1'
 - name: cert-manager-operator.v1.18.0
-  replaces: cert-manager-operator.v1.17.1
-  skipRange: '>=1.17.1 <1.18.0'
+  replaces: cert-manager-operator.v1.17.0
+  skipRange: '>=1.17.0 <1.18.0'
 - name: cert-manager-operator.v1.18.1
   replaces: cert-manager-operator.v1.18.0
   skipRange: '>=1.18.0 <1.18.1'
@@ -143,12 +137,9 @@ entries:
   - name: cert-manager-operator.v1.17.0
     replaces: cert-manager-operator.v1.16.1
     skipRange: '>=1.16.1 <1.17.0'
-  - name: cert-manager-operator.v1.17.1
-    replaces: cert-manager-operator.v1.17.0
-    skipRange: '>=1.17.0 <1.17.1'
   - name: cert-manager-operator.v1.18.0
-    replaces: cert-manager-operator.v1.17.1
-    skipRange: '>=1.17.1 <1.18.0'
+    replaces: cert-manager-operator.v1.17.0
+    skipRange: '>=1.17.0 <1.18.0'
   - name: cert-manager-operator.v1.18.1
     replaces: cert-manager-operator.v1.18.0
     skipRange: '>=1.18.0 <1.18.1'
