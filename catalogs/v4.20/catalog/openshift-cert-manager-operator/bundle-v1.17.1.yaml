@@ -1,5 +1,5 @@
 ---
-image: registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:41b13edaba2a7e189bb7d7e3f2bb5e7fb7640cfece00300de1ab56870b592903
+image: registry.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:99cf618b22c11a41ea54badae65da41f0eab07dcac9ce8fbbe4855fc4ee836ce
 name: cert-manager-operator.v1.17.1
 package: openshift-cert-manager-operator
 properties:
@@ -286,8 +286,8 @@ properties:
       capabilities: Seamless Upgrades
       categories: Security
       console.openshift.io/disable-operand-delete: "true"
-      containerImage: registry.stage.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:606d7248f4c2f843edc68c1c28873638a2ec6864adde954553142cbf51aa54fe
-      createdAt: 2026-03-17T16:04:20
+      containerImage: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:766d583f7fd2dcffa968cae98974d8d8f39f9eb74929c95dedab92cb91752962
+      createdAt: 2026-03-25T07:30:35
       features.operators.openshift.io/cnf: "false"
       features.operators.openshift.io/cni: "false"
       features.operators.openshift.io/csi: "false"
@@ -381,16 +381,16 @@ properties:
 relatedImages:
 - image: registry.redhat.io/cert-manager/cert-manager-istio-csr-rhel9@sha256:9ea2c29a384b964cef14f853278821df3cd30320f25afab8823897192f67fc7e
   name: cert-manager-istiocsr
-- image: registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:41b13edaba2a7e189bb7d7e3f2bb5e7fb7640cfece00300de1ab56870b592903
+- image: registry.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:99cf618b22c11a41ea54badae65da41f0eab07dcac9ce8fbbe4855fc4ee836ce
   name: ""
-- image: registry.stage.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:606d7248f4c2f843edc68c1c28873638a2ec6864adde954553142cbf51aa54fe
+- image: registry.redhat.io/cert-manager/cert-manager-operator-rhel9@sha256:766d583f7fd2dcffa968cae98974d8d8f39f9eb74929c95dedab92cb91752962
   name: ""
-- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:691598c15eaa2822a83a9bd6c0699ab888b51c0ffb5fdc9056e0da2048bac542
+- image: registry.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9@sha256:1ba7349edafaba5adc573e58e82ee45f73e3827889f8dc9ce54137679d79f381
   name: cert-manager-acmesolver
-- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:90cf04cc1db199c3a2d4cb716e52f0e7e43f6e1279619d912e49766f0634a309
+- image: registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:3025551497a7a58b7baf4246f48b8350d59bfa186fd24b7e2049700f30fdad73
   name: cert-manager-webhook
-- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:90cf04cc1db199c3a2d4cb716e52f0e7e43f6e1279619d912e49766f0634a309
+- image: registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:3025551497a7a58b7baf4246f48b8350d59bfa186fd24b7e2049700f30fdad73
   name: cert-manager-ca-injector
-- image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:90cf04cc1db199c3a2d4cb716e52f0e7e43f6e1279619d912e49766f0634a309
+- image: registry.redhat.io/cert-manager/jetstack-cert-manager-rhel9@sha256:3025551497a7a58b7baf4246f48b8350d59bfa186fd24b7e2049700f30fdad73
   name: cert-manager-controller
 schema: olm.bundle
