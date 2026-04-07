@@ -1,12 +1,19 @@
 FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_9_golang_1.25 AS builder
 
 ARG SOURCE_DIR="/go/src/github.com/openshift/cert-manager-operator"
+ARG COMMIT_SHA
 WORKDIR $SOURCE_DIR
 
 COPY cert-manager-operator $SOURCE_DIR
 COPY cert-manager-operator/LICENSE /licenses/
 
-RUN make build --warn-undefined-variables
+ENV GO_BUILD_TAGS=strictfipsruntime,openssl
+ENV GOEXPERIMENT=strictfipsruntime
+ENV CGO_ENABLED=1
+ENV GOFLAGS=""
+ENV GOBUILD_BUILD_FLAGS='-w -s -X github.com/openshift/cert-manager-operator/pkg/version.COMMIT=${COMMIT_SHA}'
+
+RUN go build -o "$SOURCE_DIR/cert-manager-operator" -ldflags "${GOBUILD_BUILD_FLAGS}" -tags "${GO_BUILD_TAGS}" main.go
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:83006d535923fcf1345067873524a3980316f51794f01d8655be55d6e9387183
 
