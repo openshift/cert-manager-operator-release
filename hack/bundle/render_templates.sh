@@ -27,7 +27,7 @@ update_csv_manifest() {
 		-e "s#quay.io/jetstack/cert-manager-cainjector.*#${CERT_MANAGER_CA_INJECTOR_IMAGE}#g" \
 		-e "s#quay.io/jetstack/cert-manager-acmesolver.*#${CERT_MANAGER_ACMESOLVER_IMAGE}#g" \
 		-e "s#quay.io/jetstack/cert-manager-istio-csr.*#${CERT_MANAGER_ISTIOCSR_IMAGE}#g" \
-		-e "s#quay.io/jetstack/trust-manager.*#${TRUST_MANAGER_IMAGE}#g" \
+		-e "s#quay.io/jetstack/trust-manager.*#${CERT_MANAGER_TRUST_MANAGER_IMAGE}#g" \
 		"${csv_file}"
 
 	## update annotations in CSV manifest.
@@ -81,7 +81,7 @@ required_images=(
 	CERT_MANAGER_CONTROLLER_IMAGE
 	CERT_MANAGER_ACMESOLVER_IMAGE
 	CERT_MANAGER_ISTIOCSR_IMAGE
-	TRUST_MANAGER_IMAGE
+	CERT_MANAGER_TRUST_MANAGER_IMAGE
 )
 
 for img_var in "${required_images[@]}"; do
