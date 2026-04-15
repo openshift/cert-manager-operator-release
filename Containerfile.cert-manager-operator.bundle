@@ -29,7 +29,7 @@ RUN ./render_templates.sh /manifests /metadata \
     "${CERT_MANAGER_CONTROLLER_IMAGE}" \
     "${CERT_MANAGER_ACMESOLVER_IMAGE}"
 
-FROM registry.redhat.io/rhel9-4-els/rhel-minimal:9.4-1773894668
+FROM registry.redhat.io/rhel9-4-els/rhel-minimal:9.4-1776143477
 
 ARG RELEASE_VERSION
 ARG COMMIT_SHA
