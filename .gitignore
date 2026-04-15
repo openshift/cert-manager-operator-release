@@ -2,3 +2,4 @@ bin
 cert-manager/
 cert-manager-operator/
 cert-manager-istio-csr/
+trust-manager/
