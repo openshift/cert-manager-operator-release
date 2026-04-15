@@ -1,6 +1,6 @@
 ## local variables.
 cert_manager_submodule_dir = cert-manager
-cert_manager_submodule_tag = $(strip $(shell git config -f .gitmodules submodule.jetstack-cert-manager.tag))
+cert_manager_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.jetstack-cert-manager.branch))
 cert_manager_operator_submodule_dir = cert-manager-operator
 cert_manager_operator_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.cert-manager-operator.branch))
 istio_csr_submodule_dir = cert-manager-istio-csr
@@ -18,8 +18,8 @@ source_url = $(strip $(shell git remote get-url origin))
 release_version = v$(strip $(shell git branch --show-current | cut -d'-' -f2))
 
 ## validate that tags and branches are not empty
-ifeq ($(cert_manager_submodule_tag),)
-$(error cert_manager_submodule_tag is empty.)
+ifeq ($(cert_manager_submodule_branch),)
+$(error cert_manager_submodule_branch is empty.)
 endif
 ifeq ($(cert_manager_operator_submodule_branch),)
 $(error cert_manager_operator_submodule_branch is empty.)
@@ -93,7 +93,7 @@ switch-submodules-branch:
 .PHONY: update-submodules
 update-submodules:
 	git submodule foreach --recursive 'git fetch -t'
-	cd $(cert_manager_submodule_dir) && git checkout $(cert_manager_submodule_tag) && cd - > /dev/null
+	cd $(cert_manager_submodule_dir) && git checkout $(cert_manager_submodule_branch) && cd - > /dev/null
 	cd $(istio_csr_submodule_dir) && git checkout $(istio_csr_submodule_tag) && cd - > /dev/null
 	cd $(trust_manager_submodule_dir) && git checkout $(trust_manager_submodule_tag) && cd - > /dev/null
 	cd $(cert_manager_operator_submodule_dir) && git checkout $(cert_manager_operator_submodule_branch) && git pull origin $(cert_manager_operator_submodule_branch) && cd - > /dev/null
