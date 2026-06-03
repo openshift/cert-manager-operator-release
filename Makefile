@@ -4,7 +4,7 @@ cert_manager_submodule_branch = $(strip $(shell git config -f .gitmodules submod
 cert_manager_operator_submodule_dir = cert-manager-operator
 cert_manager_operator_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.cert-manager-operator.branch))
 istio_csr_submodule_dir = cert-manager-istio-csr
-istio_csr_submodule_tag = $(strip $(shell git config -f .gitmodules submodule.cert-manager-istio-csr.tag))
+istio_csr_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.cert-manager-istio-csr.branch))
 trust_manager_submodule_dir = trust-manager
 trust_manager_submodule_tag = $(strip $(shell git config -f .gitmodules submodule.cert-manager-trust-manager.tag))
 cert_manager_containerfile_name = Containerfile.cert-manager
@@ -24,8 +24,8 @@ endif
 ifeq ($(cert_manager_operator_submodule_branch),)
 $(error cert_manager_operator_submodule_branch is empty.)
 endif
-ifeq ($(istio_csr_submodule_tag),)
-$(error istio_csr_submodule_tag is empty.)
+ifeq ($(istio_csr_submodule_branch),)
+$(error istio_csr_submodule_branch is empty.)
 endif
 ifeq ($(trust_manager_submodule_tag),)
 $(error trust_manager_submodule_tag is empty.)
@@ -93,8 +93,8 @@ switch-submodules-branch:
 .PHONY: update-submodules
 update-submodules:
 	git submodule foreach --recursive 'git fetch -t'
-	cd $(cert_manager_submodule_dir) && git checkout $(cert_manager_submodule_branch) && cd - > /dev/null
-	cd $(istio_csr_submodule_dir) && git checkout $(istio_csr_submodule_tag) && cd - > /dev/null
+	cd $(cert_manager_submodule_dir) && git checkout $(cert_manager_submodule_branch) && git pull origin $(cert_manager_submodule_branch) && cd - > /dev/null
+	cd $(istio_csr_submodule_dir) && git checkout $(istio_csr_submodule_branch) && git pull origin $(istio_csr_submodule_branch) && cd - > /dev/null
 	cd $(trust_manager_submodule_dir) && git checkout $(trust_manager_submodule_tag) && cd - > /dev/null
 	cd $(cert_manager_operator_submodule_dir) && git checkout $(cert_manager_operator_submodule_branch) && git pull origin $(cert_manager_operator_submodule_branch) && cd - > /dev/null
 

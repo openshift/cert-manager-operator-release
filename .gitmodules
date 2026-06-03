@@ -9,7 +9,7 @@
 [submodule "cert-manager-istio-csr"]
 	path = cert-manager-istio-csr
 	url = https://github.com/openshift/cert-manager-istio-csr.git
-	tag = v0.16.0
+	branch = release-1.19
 [submodule "cert-manager-trust-manager"]
 	path = trust-manager
 	url = https://github.com/openshift/cert-manager-trust-manager.git
