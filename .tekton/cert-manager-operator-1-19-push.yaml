@@ -32,7 +32,7 @@ spec:
     value: .
   - name: build-args
     value:
-    - RELEASE_VERSION=v1.19.0
+    - RELEASE_VERSION=v1.19.1
     - COMMIT_SHA={{revision}}
     - SOURCE_URL={{source_url}}
   - name: snyk-org-id
