@@ -14,7 +14,7 @@ RUN cd $SOURCE_DIR/cmd/cainjector && go build -o $SOURCE_DIR/_output/cainjector 
 RUN cd $SOURCE_DIR/cmd/controller && go build -o $SOURCE_DIR/_output/controller -ldflags '-w -s' -tags ${GO_BUILD_TAGS} main.go
 RUN cd $SOURCE_DIR/cmd/webhook && go build -o $SOURCE_DIR/_output/webhook -ldflags '-w -s' -tags ${GO_BUILD_TAGS} main.go
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:ae09ecc3d754bc1726cbda3e2599cc7839e09fe1cc547ce173cf669b645be3cc
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:1bc3c5c15720506a0cf48adfdf8b623dfe704377e007d7bbae8d14876392ca6a
 
 # Values for below ARGs will passed from tekton configs for konflux builds.
 ## Release version of the cert-manager source code used in the build.
