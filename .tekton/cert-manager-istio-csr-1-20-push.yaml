@@ -8,14 +8,14 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "release-1.19" && (".tekton/jetstack-cert-manager-1-19-push.yaml".pathChanged() ||
-      "Containerfile.cert-manager".pathChanged() || "cert-manager".pathChanged())
+      == "release-1.20" && (".tekton/cert-manager-istio-csr-1-20-push.yaml".pathChanged() ||
+      "Containerfile.cert-manager-istio-csr".pathChanged() || "cert-manager-istio-csr".pathChanged())
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: jetstack-cert-manager-1-19
-    appstudio.openshift.io/component: jetstack-cert-manager-1-19
+    appstudio.openshift.io/application: cert-manager-istio-csr-1-20
+    appstudio.openshift.io/component: cert-manager-istio-csr-1-20
     pipelines.appstudio.openshift.io/type: build
-  name: jetstack-cert-manager-1-19-on-push
+  name: cert-manager-istio-csr-1-20-on-push
   namespace: cert-manager-oape-tenant
 spec:
   params:
@@ -24,26 +24,26 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/jetstack-cert-manager-1-19/jetstack-cert-manager-1-19:{{revision}}
+    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/cert-manager-istio-csr-1-20/cert-manager-istio-csr-1-20:{{revision}}
   - name: dockerfile
-    value: Containerfile.cert-manager
+    value: Containerfile.cert-manager-istio-csr
   - name: path-context
     value: .
   - name: build-args
     value:
-    - RELEASE_VERSION=v1.19.5
+    - RELEASE_VERSION=v0.16.0-1
     - COMMIT_SHA={{revision}}
     - SOURCE_URL={{source_url}}
   - name: prefetch-input
-    value: '{"type": "gomod", "path": "cert-manager"}'
+    value: '{"type": "gomod", "path": "cert-manager-istio-csr"}'
   - name: snyk-org-id
     value: "b6dda4fc-c9ea-48da-ac45-67f75f258e5a"
   - name: snyk-proj-name
-    value: "jetstack-cert-manager"
+    value: "cert-manager-istio-csr"
   pipelineRef:
     name: multi-arch-build-pipeline
   taskRunTemplate:
-    serviceAccountName: build-pipeline-jetstack-cert-manager-1-19
+    serviceAccountName: build-pipeline-cert-manager-istio-csr-1-20
   workspaces:
   - name: git-auth
     secret:

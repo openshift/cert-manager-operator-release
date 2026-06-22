@@ -8,15 +8,14 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "release-1.19" && (".tekton/cert-manager-operator-1-19-push.yaml".pathChanged() ||
-      ".tekton/multi-arch-build-pipeline.yaml".pathChanged() || "Containerfile.cert-manager-operator".pathChanged() ||
-      "cert-manager-operator".pathChanged())
+      == "release-1.20" && (".tekton/jetstack-cert-manager-acmesolver-1-20-push.yaml".pathChanged() ||
+      "Containerfile.cert-manager.acmesolver".pathChanged() || "cert-manager".pathChanged())
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: cert-manager-operator-1-19
-    appstudio.openshift.io/component: cert-manager-operator-1-19
+    appstudio.openshift.io/application: jetstack-cert-manager-1-20
+    appstudio.openshift.io/component: jetstack-cert-manager-acmesolver-1-20
     pipelines.appstudio.openshift.io/type: build
-  name: cert-manager-operator-1-19-on-push
+  name: jetstack-cert-manager-acmesolver-1-20-on-push
   namespace: cert-manager-oape-tenant
 spec:
   params:
@@ -25,24 +24,26 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/cert-manager-operator-1-19/cert-manager-operator-1-19:{{revision}}
+    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/jetstack-cert-manager-1-20/jetstack-cert-manager-acmesolver-1-20:{{revision}}
   - name: dockerfile
-    value: Containerfile.cert-manager-operator
+    value: Containerfile.cert-manager.acmesolver
   - name: path-context
     value: .
   - name: build-args
     value:
-    - RELEASE_VERSION=v1.19.1
+    - RELEASE_VERSION=v1.20.2
     - COMMIT_SHA={{revision}}
     - SOURCE_URL={{source_url}}
+  - name: prefetch-input
+    value: '{"type": "gomod", "path": "cert-manager"}'
   - name: snyk-org-id
     value: "b6dda4fc-c9ea-48da-ac45-67f75f258e5a"
   - name: snyk-proj-name
-    value: "cert-manager-operator"
+    value: "jetstack-cert-manager"
   pipelineRef:
     name: multi-arch-build-pipeline
   taskRunTemplate:
-    serviceAccountName: build-pipeline-cert-manager-operator-1-19
+    serviceAccountName: build-pipeline-jetstack-cert-manager-acmesolver-1-20
   workspaces:
   - name: git-auth
     secret:

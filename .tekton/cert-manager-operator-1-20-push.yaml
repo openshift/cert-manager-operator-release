@@ -4,20 +4,19 @@ metadata:
   annotations:
     build.appstudio.openshift.io/repo: https://github.com/openshift/cert-manager-operator-release?rev={{revision}}
     build.appstudio.redhat.com/commit_sha: '{{revision}}'
-    build.appstudio.redhat.com/pull_request_number: '{{pull_request_number}}'
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
-    pipelinesascode.tekton.dev/cancel-in-progress: "true"
+    pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
-    pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
-      == "release-1.19" && (".tekton/cert-manager-operator-1-19-pull-request.yaml".pathChanged() ||
+    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
+      == "release-1.20" && (".tekton/cert-manager-operator-1-20-push.yaml".pathChanged() ||
       ".tekton/multi-arch-build-pipeline.yaml".pathChanged() || "Containerfile.cert-manager-operator".pathChanged() ||
       "cert-manager-operator".pathChanged())
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: cert-manager-operator-1-19
-    appstudio.openshift.io/component: cert-manager-operator-1-19
+    appstudio.openshift.io/application: cert-manager-operator-1-20
+    appstudio.openshift.io/component: cert-manager-operator-1-20
     pipelines.appstudio.openshift.io/type: build
-  name: cert-manager-operator-1-19-on-pull-request
+  name: cert-manager-operator-1-20-on-push
   namespace: cert-manager-oape-tenant
 spec:
   params:
@@ -26,16 +25,14 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/cert-manager-operator-1-19/cert-manager-operator-1-19:on-pr-{{revision}}
-  - name: image-expires-after
-    value: 5d
+    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/cert-manager-operator-1-20/cert-manager-operator-1-20:{{revision}}
   - name: dockerfile
     value: Containerfile.cert-manager-operator
   - name: path-context
     value: .
   - name: build-args
     value:
-    - RELEASE_VERSION=v1.19.1
+    - RELEASE_VERSION=v1.20.0
     - COMMIT_SHA={{revision}}
     - SOURCE_URL={{source_url}}
   - name: snyk-org-id
@@ -45,7 +42,7 @@ spec:
   pipelineRef:
     name: multi-arch-build-pipeline
   taskRunTemplate:
-    serviceAccountName: build-pipeline-cert-manager-operator-1-19
+    serviceAccountName: build-pipeline-cert-manager-operator-1-20
   workspaces:
   - name: git-auth
     secret:
