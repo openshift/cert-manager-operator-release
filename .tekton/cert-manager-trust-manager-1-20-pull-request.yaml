@@ -9,14 +9,14 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: "true"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
-      == "release-1.19" && (".tekton/cert-manager-istio-csr-1-19-pull-request.yaml".pathChanged() ||
-      "Containerfile.cert-manager-istio-csr".pathChanged() || "cert-manager-istio-csr".pathChanged())
+      == "release-1.20" && (".tekton/cert-manager-trust-manager-1-20-pull-request.yaml".pathChanged() ||
+      "Containerfile.cert-manager-trust-manager".pathChanged() || "trust-manager".pathChanged())
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: cert-manager-istio-csr-1-19
-    appstudio.openshift.io/component: cert-manager-istio-csr-1-19
+    appstudio.openshift.io/application: cert-manager-trust-manager-1-20
+    appstudio.openshift.io/component: cert-manager-trust-manager-1-20
     pipelines.appstudio.openshift.io/type: build
-  name: cert-manager-istio-csr-1-19-on-pull-request
+  name: cert-manager-trust-manager-1-20-on-pull-request
   namespace: cert-manager-oape-tenant
 spec:
   params:
@@ -25,28 +25,28 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/cert-manager-istio-csr-1-19/cert-manager-istio-csr-1-19:on-pr-{{revision}}
+    value: quay.io/redhat-user-workloads/cert-manager-oape-tenant/cert-manager-trust-manager-1-20/cert-manager-trust-manager-1-20:on-pr-{{revision}}
   - name: image-expires-after
     value: 5d
   - name: dockerfile
-    value: Containerfile.cert-manager-istio-csr
+    value: Containerfile.cert-manager-trust-manager
   - name: path-context
     value: .
   - name: build-args
     value:
-    - RELEASE_VERSION=v0.16.0-1
+    - RELEASE_VERSION=v0.20.3
     - COMMIT_SHA={{revision}}
     - SOURCE_URL={{source_url}}
   - name: prefetch-input
-    value: '{"type": "gomod", "path": "cert-manager-istio-csr"}'
+    value: '{"type": "gomod", "path": "trust-manager"}'
   - name: snyk-org-id
     value: "b6dda4fc-c9ea-48da-ac45-67f75f258e5a"
   - name: snyk-proj-name
-    value: "cert-manager-istio-csr"
+    value: "cert-manager-trust-manager"
   pipelineRef:
     name: multi-arch-build-pipeline
   taskRunTemplate:
-    serviceAccountName: build-pipeline-cert-manager-istio-csr-1-19
+    serviceAccountName: build-pipeline-cert-manager-trust-manager-1-20
   workspaces:
   - name: git-auth
     secret:
