@@ -48,3 +48,15 @@ Use the command below to get usage summary and interact with the repository.
 ```console
 make help
 ```
+
+## Automated dependency updates
+
+MintMaker (`red-hat-konflux[bot]`) opens pull requests to refresh dependencies in this repository, including Tekton pipeline references under `.tekton/`. Konflux Components for the end-of-life releases below are annotated so they no longer receive those updates:
+
+| cert-manager version | Repository branch |
+|----------------------|-------------------|
+| 1.14.x               | `release-1.14`    |
+| 1.15.x               | `release-1.15`    |
+| 1.16.x               | `release-1.16`    |
+
+See [docs/development/konflux.md](docs/development/konflux.md#disabling-mintmaker-for-end-of-life-releases) for how to disable or manage these updates when a release reaches end of life.
