@@ -12,7 +12,7 @@ verify_script()
 		'!' -path './cert-manager-istio-csr/*' \
 		'!' -path './trust-manager/*' \
 		-printf "[$(date)] -- INFO  -- checking file %p\n" \
-		-exec podman run --rm -v "$PWD:/mnt" docker.io/koalaman/shellcheck:stable '{}' + ; then
+		-exec podman run --rm -v "$PWD:/mnt:Z" -w /mnt docker.io/koalaman/shellcheck:stable '{}' + ; then
 		exit 1
 	fi
 }
