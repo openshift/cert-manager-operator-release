@@ -42,8 +42,14 @@ OPM_TOOL_PATH ?= $(TOOL_BIN_DIR)/opm
 ## Operator bundle image to use for generating catalog.
 OPERATOR_BUNDLE_IMAGE ?= 
 
-## Catalog directory where generated catalog will be stored. Directory must have sub-directory with package `openshift-cert-manager-operator` name.
-CATALOG_DIR ?= "catalog/"
+## Catalog directory where generated catalog will be stored (e.g. catalogs/v4.22/catalog).
+CATALOG_DIR ?=
+
+## Bundle file name to generate under the package directory (e.g. bundle-v1.20.0.yaml).
+BUNDLE_FILE_NAME ?=
+
+## OCP versions to replicate the bundle to: no | yes | 4.19,4.20 | 4.19-4.22
+REPLICATE_BUNDLE_FILE_IN_CATALOGS ?= no
 
 .DEFAULT_GOAL := help
 ## usage summary.
@@ -75,7 +81,10 @@ build-catalog-image:
 ## update catalog using the provided bundle image.
 .PHONY: update-catalog
 update-catalog: get-opm
-	@# Ex: make update-catalog OPERATOR_BUNDLE_IMAGE=registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:41b13edaba2a7e189bb7d7e3f2bb5e7fb7640cfece00300de1ab56870b592903 CATALOG_DIR=catalogs/v4.16/catalog BUNDLE_FILE_NAME=bundle-v1.17.1.yaml REPLICATE_BUNDLE_FILE_IN_CATALOGS=no USE_MIGRATE_LEVEL_FLAG=yes
+	@test -n "$(OPERATOR_BUNDLE_IMAGE)" || { echo "OPERATOR_BUNDLE_IMAGE is required"; exit 1; }
+	@test -n "$(CATALOG_DIR)" || { echo "CATALOG_DIR is required (e.g. catalogs/v4.22/catalog)"; exit 1; }
+	@test -n "$(BUNDLE_FILE_NAME)" || { echo "BUNDLE_FILE_NAME is required (e.g. bundle-v1.20.0.yaml)"; exit 1; }
+	@#ex.: make update-catalog OPERATOR_BUNDLE_IMAGE=registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:39404aefc48202660c9b4dfae18672cc4ed66d0a9b08fcf5ae70a4504c4e7dff CATALOG_DIR=catalogs/v4.19/catalog BUNDLE_FILE_NAME=bundle-v1.20.0.yaml REPLICATE_BUNDLE_FILE_IN_CATALOGS=4.19-5.0 USE_MIGRATE_LEVEL_FLAG=yes
 	./hack/update_catalog.sh $(OPM_TOOL_PATH) $(OPERATOR_BUNDLE_IMAGE) $(CATALOG_DIR) $(BUNDLE_FILE_NAME) $(REPLICATE_BUNDLE_FILE_IN_CATALOGS) $(USE_MIGRATE_LEVEL_FLAG)
 
 ## update catalog and build catalog image.
