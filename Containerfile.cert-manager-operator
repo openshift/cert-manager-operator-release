@@ -15,7 +15,7 @@ ENV GOBUILD_BUILD_FLAGS='-w -s -X github.com/openshift/cert-manager-operator/pkg
 
 RUN go build -o "$SOURCE_DIR/cert-manager-operator" -ldflags "${GOBUILD_BUILD_FLAGS}" -tags "${GO_BUILD_TAGS}" main.go
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:dd334afa72444fa46238fcf9e6bd399245adf746378735348cf84b9dfdca38f1
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:7c372902c8d211db2d25c8277ba534a73b92742a334874dced829a63b0f21221
 
 # Values for below ARGs will passed from tekton configs for konflux builds.
 ## Release version of the cert-manager-operator source code used in the build.
