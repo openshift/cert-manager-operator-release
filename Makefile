@@ -1,7 +1,10 @@
 ## local variables.
 cert_manager_submodule_dir = cert-manager
+cert_manager_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.jetstack-cert-manager.branch))
 cert_manager_operator_submodule_dir = cert-manager-operator
+cert_manager_operator_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.cert-manager-operator.branch))
 istio_csr_submodule_dir = cert-manager-istio-csr
+istio_csr_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.cert-manager-istio-csr.branch))
 cert_manager_containerfile_name = Containerfile.cert-manager
 cert_manager_acmesolver_containerfile_name = Containerfile.cert-manager.acmesolver
 cert_manager_operator_containerfile_name = Containerfile.cert-manager-operator
@@ -11,33 +14,15 @@ commit_sha = $(strip $(shell git rev-parse HEAD))
 source_url = $(strip $(shell git remote get-url origin))
 release_version = v$(strip $(shell git branch --show-current | cut -d'-' -f2))
 
-## cert-manager-operator-release and cert-manager follow same naming for release
-## branches except for cert-manager-operator which has release version as suffix in
-## the branch name like in aforementioned repositories, which will be used for
-## deriving the submodules branch.
-PARENT_BRANCH_SUFFIX = $(strip $(shell git branch --show-current | cut -d'-' -f2))
-
-## current branch name of the cert-manager submodule.
-CERT_MANAGER_BRANCH ?= release-$(PARENT_BRANCH_SUFFIX)
-## check if the parent module branch is main and assign the equivalent cert-manager
-## branch instead of deriving the branch name.
-ifeq ($(PARENT_BRANCH_SUFFIX), main)
-CERT_MANAGER_BRANCH = master
+## validate that tags and branches are not empty
+ifeq ($(cert_manager_submodule_branch),)
+$(error cert_manager_submodule_branch is empty.)
 endif
-
-## current branch name of the cert-manager-operator submodule.
-CERT_MANAGER_OPERATOR_BRANCH ?= cert-manager-$(PARENT_BRANCH_SUFFIX)
-## check if the parent module branch is main and assign the equivalent cert-manager-operator
-## branch instead of deriving the branch name.
-ifeq ($(PARENT_BRANCH_SUFFIX), main)
-CERT_MANAGER_OPERATOR_BRANCH = master
+ifeq ($(cert_manager_operator_submodule_branch),)
+$(error cert_manager_operator_submodule_branch is empty.)
 endif
-
-## current branch name of the istio-csr submodule.
-ISTIO_CSR_BRANCH ?= release-$(PARENT_BRANCH_SUFFIX)
-
-ifeq ($(PARENT_BRANCH_SUFFIX), main)
-ISTIO_CSR_BRANCH = main
+ifeq ($(istio_csr_submodule_branch),)
+$(error istio_csr_submodule_branch is empty.)
 endif
 
 ## container build tool to use for creating images.
@@ -55,17 +40,11 @@ CERT_MANAGER_IMAGE ?= cert-manager
 ## image name for cert-manager-acmesolver.
 CERT_MANAGER_ACMESOLVER_IMAGE ?= cert-manager-acmesolver
 
-## image version to tag the created images with.
-IMAGE_VERSION ?= $(release_version)
-
 ## image for istio-csr
 ISTIO_CSR_IMAGE ?= cert-manager-istio-csr
 
-## image tag makes use of the branch name and
-## when branch name is `main` use `latest` as the tag.
-ifeq ($(PARENT_BRANCH_SUFFIX), main)
-IMAGE_VERSION = latest
-endif
+## image version tag for the all images created.
+IMAGE_VERSION ?= v1.17.1
 
 ## args to pass during image build
 IMAGE_BUILD_ARGS ?= --build-arg RELEASE_VERSION=$(release_version) --build-arg COMMIT_SHA=$(commit_sha) --build-arg SOURCE_URL=$(source_url)
@@ -95,21 +74,19 @@ help:
 .PHONY: all
 all: verify
 
-## checkout submodules branch to match the parent branch.
+## sync git submodules to the commits recorded in the current branch.
 .PHONY: switch-submodules-branch
 switch-submodules-branch:
-	cd $(cert_manager_submodule_dir); git checkout $(CERT_MANAGER_BRANCH); cd - > /dev/null
-	cd $(cert_manager_operator_submodule_dir); git checkout $(CERT_MANAGER_OPERATOR_BRANCH); cd - > /dev/null
-	cd $(istio_csr_submodule_dir); git checkout $(ISTIO_CSR_BRANCH); cd - > /dev/null
 	# update with local cache.
-	git submodule update
+	git submodule update --recursive
 
-## update submodules revision to match the revision of the origin repository.
+## update submodules to the tip of their configured branches from the origin repository.
 .PHONY: update-submodules
 update-submodules:
-	git submodule update --remote $(istio_csr_submodule_dir)
-	git submodule update --remote $(cert_manager_submodule_dir)
-	git submodule update --remote $(cert_manager_operator_submodule_dir)
+	git submodule foreach --recursive 'git fetch -t'
+	cd $(cert_manager_submodule_dir) && git checkout $(cert_manager_submodule_branch) && git pull origin $(cert_manager_submodule_branch) && cd - > /dev/null
+	cd $(istio_csr_submodule_dir) && git checkout $(istio_csr_submodule_branch) && git pull origin $(istio_csr_submodule_branch) && cd - > /dev/null
+	cd $(cert_manager_operator_submodule_dir) && git checkout $(cert_manager_operator_submodule_branch) && git pull origin $(cert_manager_operator_submodule_branch) && cd - > /dev/null
 
 ## build all the images - operator, operand and operator-bundle.
 .PHONY: build-images
@@ -168,24 +145,10 @@ clean:
 	$(CONTAINER_ENGINE) rmi -i $(CERT_MANAGER_OPERATOR_IMAGE):$(IMAGE_VERSION) \
 $(CERT_MANAGER_IMAGE):$(IMAGE_VERSION) \
 $(CERT_MANAGER_ACMESOLVER_IMAGE):$(IMAGE_VERSION) \
-$(CERT_MANAGER_OPERATOR_BUNDLE_IMAGE):$(IMAGE_VERSION)
+$(CERT_MANAGER_OPERATOR_BUNDLE_IMAGE):$(IMAGE_VERSION) \
+$(ISTIO_CSR_IMAGE):$(IMAGE_VERSION)
 
 ## validate renovate config.
 .PHONY: validate-renovate-config
 validate-renovate-config:
 	./hack/renovate-config-validator.sh
-
-## update tekton pipeline versions.
-## Usage: make update-tekton-versions OPERATOR_VERSION=v1.18.0 ISTIO_CSR_VERSION=v0.14.2 JETSTACK_VERSION=v1.18.2
-.PHONY: update-tekton-versions
-update-tekton-versions:
-	@if [ -z "$(OPERATOR_VERSION)$(ISTIO_CSR_VERSION)$(JETSTACK_VERSION)" ]; then \
-		echo "Error: At least one version must be specified"; \
-		echo "Usage: make update-tekton-versions OPERATOR_VERSION=v1.18.0 [ISTIO_CSR_VERSION=v0.14.2] [JETSTACK_VERSION=v1.18.2]"; \
-		exit 1; \
-	fi
-	./hack/update_tekton_versions.sh \
-		$(if $(OPERATOR_VERSION),-o $(OPERATOR_VERSION)) \
-		$(if $(ISTIO_CSR_VERSION),-i $(ISTIO_CSR_VERSION)) \
-		$(if $(JETSTACK_VERSION),-j $(JETSTACK_VERSION))
-
