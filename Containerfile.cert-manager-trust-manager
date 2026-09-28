@@ -16,7 +16,7 @@ ENV GOFLAGS=""
 
 RUN cd $SOURCE_DIR/cmd/trust-manager && go build -o $SOURCE_DIR/_output/cert-manager-trust-manager -ldflags '-w -s' -tags ${GO_BUILD_TAGS} main.go
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:8ebe2ad8fdf3cab3e5a53c1edc69194c98209cfadab24b884f4ad9ebcf7bbbfc
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:beeada7dd17903dfb69fd5f6916c054720bf28a52daaa2f7a1910a1394244bd2
 
 # Values for below ARGs will passed from tekton configs for konflux builds.
 ## Release version of the cert-manager source code used in the build.
