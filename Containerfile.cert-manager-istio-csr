@@ -16,7 +16,7 @@ ENV GOFLAGS=""
 
 RUN cd $SOURCE_DIR/cmd && go build -o $SOURCE_DIR/_output/cert-manager-istio-csr -ldflags '-w -s' -tags ${GO_BUILD_TAGS} main.go
 
-FROM registry.ci.openshift.org/ocp/5.0:base-rhel9@sha256:744e8f2bfedcb78609bb6f7ce61d8f909dd9706d0e9761a1d2afa0f674182bd3
+FROM registry.redhat.io/ubi9/ubi-minimal-pqc:latest@sha256:e8673bd338b3f093501a9a9088f043d8959df120edd9947583e2d9bb3aacc3a8
 
 # Values for below ARGs will passed from tekton configs for konflux builds.
 ## Release version of the cert-manager source code used in the build.
