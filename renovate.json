@@ -29,24 +29,6 @@
 				"- New digest: `{{newDigestShort}}`",
 				""
 			]
-		},
-		{
-			"description": "Update the PQC UBI minimal base image monthly (fetch latest tag digest)",
-			"matchDatasources": ["docker"],
-			"matchPackageNames": ["registry.redhat.io/ubi9/ubi-minimal-pqc"],
-			"schedule": ["on the first day of the month"],
-			"pinDigests": true,
-			"matchCurrentValue": "latest",
-			"commitMessageTopic": "Updates RHEL UBI PQC base image digest",
-			"prBodyNotes": [
-				"**Base Image Update Info:**",
-				"- Registry: `registry.redhat.io`",
-				"- Image: `ubi9/ubi-minimal-pqc`",
-				"- Tag: `latest`",
-				"- Previous digest: `{{currentDigestShort}}`",
-				"- New digest: `{{newDigestShort}}`",
-				""
-			]
 		}
 	],
 	"tekton": {
