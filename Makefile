@@ -44,7 +44,7 @@ CERT_MANAGER_ACMESOLVER_IMAGE ?= cert-manager-acmesolver
 ISTIO_CSR_IMAGE ?= cert-manager-istio-csr
 
 ## image version tag for the all images created.
-IMAGE_VERSION ?= v1.17.1
+IMAGE_VERSION ?= v1.17.2
 
 ## args to pass during image build
 IMAGE_BUILD_ARGS ?= --build-arg RELEASE_VERSION=$(release_version) --build-arg COMMIT_SHA=$(commit_sha) --build-arg SOURCE_URL=$(source_url)
