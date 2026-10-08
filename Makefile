@@ -1,10 +1,10 @@
 ## local variables.
 cert_manager_submodule_dir = cert-manager
-cert_manager_submodule_tag = $(strip $(shell git config -f .gitmodules submodule.jetstack-cert-manager.tag))
+cert_manager_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.jetstack-cert-manager.branch))
 cert_manager_operator_submodule_dir = cert-manager-operator
 cert_manager_operator_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.cert-manager-operator.branch))
 istio_csr_submodule_dir = cert-manager-istio-csr
-istio_csr_submodule_tag = $(strip $(shell git config -f .gitmodules submodule.cert-manager-istio-csr.tag))
+istio_csr_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.cert-manager-istio-csr.branch))
 cert_manager_containerfile_name = Containerfile.cert-manager
 cert_manager_acmesolver_containerfile_name = Containerfile.cert-manager.acmesolver
 cert_manager_operator_containerfile_name = Containerfile.cert-manager-operator
@@ -16,14 +16,14 @@ release_version = v$(strip $(shell git branch --show-current | cut -d'-' -f2))
 
 
 ## validate that tags and branches are not empty
-ifeq ($(cert_manager_submodule_tag),)
-$(error cert_manager_submodule_tag is empty.)
+ifeq ($(cert_manager_submodule_branch),)
+$(error cert_manager_submodule_branch is empty.)
 endif
 ifeq ($(cert_manager_operator_submodule_branch),)
 $(error cert_manager_operator_submodule_branch is empty.)
 endif
-ifeq ($(istio_csr_submodule_tag),)
-$(error istio_csr_submodule_tag is empty.)
+ifeq ($(istio_csr_submodule_branch),)
+$(error istio_csr_submodule_branch is empty.)
 endif
 
 ## cert-manager-operator-release and cert-manager follow same naming for release
@@ -70,8 +70,8 @@ CERT_MANAGER_IMAGE ?= cert-manager
 ## image name for cert-manager-acmesolver.
 CERT_MANAGER_ACMESOLVER_IMAGE ?= cert-manager-acmesolver
 
-## image version to tag the created images with.
-IMAGE_VERSION ?= $(release_version)
+## image version tag for the all images created.
+IMAGE_VERSION ?= v1.18.2
 
 ## image for istio-csr
 ISTIO_CSR_IMAGE ?= cert-manager-istio-csr
@@ -120,8 +120,8 @@ switch-submodules-branch:
 .PHONY: update-submodules
 update-submodules:
 	git submodule foreach --recursive 'git fetch -t'
-	cd $(cert_manager_submodule_dir); git checkout $(cert_manager_submodule_tag); cd - > /dev/null
-	cd $(istio_csr_submodule_dir); git checkout $(istio_csr_submodule_tag); cd - > /dev/null
+	cd $(cert_manager_submodule_dir) && git checkout $(cert_manager_submodule_branch) && git pull origin $(cert_manager_submodule_branch) && cd - > /dev/null
+	cd $(istio_csr_submodule_dir) && git checkout $(istio_csr_submodule_branch) && git pull origin $(istio_csr_submodule_branch) && cd - > /dev/null
 	cd $(cert_manager_operator_submodule_dir); git checkout $(cert_manager_operator_submodule_branch) && git pull origin $(cert_manager_operator_submodule_branch); cd - > /dev/null
 
 ## build all the images - operator, operand and operator-bundle.
