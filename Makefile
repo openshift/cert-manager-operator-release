@@ -70,8 +70,8 @@ CERT_MANAGER_IMAGE ?= cert-manager
 ## image name for cert-manager-acmesolver.
 CERT_MANAGER_ACMESOLVER_IMAGE ?= cert-manager-acmesolver
 
-## image version to tag the created images with.
-IMAGE_VERSION ?= $(release_version)
+## image version tag for the all images created.
+IMAGE_VERSION ?= v1.18.2
 
 ## image for istio-csr
 ISTIO_CSR_IMAGE ?= cert-manager-istio-csr
