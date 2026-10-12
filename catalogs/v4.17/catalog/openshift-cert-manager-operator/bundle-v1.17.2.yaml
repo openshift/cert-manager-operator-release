@@ -1,5 +1,5 @@
 ---
-image: registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:2bd5e8e79bc61e6738669648511e149eebbcb4da0e82299f84421f0952d16da3
+image: registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:bc6692c6caa5c271c26e292958a23efa93640da81e3bd17f738f4af1ffa7f67c
 name: cert-manager-operator.v1.17.2
 package: openshift-cert-manager-operator
 properties:
@@ -286,8 +286,8 @@ properties:
       capabilities: Seamless Upgrades
       categories: Security
       console.openshift.io/disable-operand-delete: "true"
-      containerImage: registry.stage.redhat.io/cert-manager/cert-manager-operator-rhel9:v1.17.2@sha256:7eb3327bcd9a350346511172368562a4cd9c543553ce8d125aeb4c880afe7c5e
-      createdAt: 2026-10-07T15:38:26
+      containerImage: registry.stage.redhat.io/cert-manager/cert-manager-operator-rhel9:v1.17.2@sha256:168254d18c4a1b8beb8370f836fc87dd399cd85008436bd2689e9598f76998fe
+      createdAt: 2026-10-12T10:12:47
       features.operators.openshift.io/cnf: "false"
       features.operators.openshift.io/cni: "false"
       features.operators.openshift.io/csi: "false"
@@ -381,9 +381,9 @@ properties:
 relatedImages:
 - image: registry.stage.redhat.io/cert-manager/cert-manager-istio-csr-rhel9:v0.14.0@sha256:a4f93891e6a7d313978a5cb1225bfd67f1c1f46618dc3db503f7f1163f6f8764
   name: cert-manager-istiocsr
-- image: registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:2bd5e8e79bc61e6738669648511e149eebbcb4da0e82299f84421f0952d16da3
+- image: registry.stage.redhat.io/cert-manager/cert-manager-operator-bundle@sha256:bc6692c6caa5c271c26e292958a23efa93640da81e3bd17f738f4af1ffa7f67c
   name: ""
-- image: registry.stage.redhat.io/cert-manager/cert-manager-operator-rhel9:v1.17.2@sha256:7eb3327bcd9a350346511172368562a4cd9c543553ce8d125aeb4c880afe7c5e
+- image: registry.stage.redhat.io/cert-manager/cert-manager-operator-rhel9:v1.17.2@sha256:168254d18c4a1b8beb8370f836fc87dd399cd85008436bd2689e9598f76998fe
   name: ""
 - image: registry.stage.redhat.io/cert-manager/jetstack-cert-manager-acmesolver-rhel9:v1.17.4-1@sha256:15d6fce592d5b6e4193b34e9631b8e90bf7cdfcd542152aa59a550fbf171088c
   name: cert-manager-acmesolver
