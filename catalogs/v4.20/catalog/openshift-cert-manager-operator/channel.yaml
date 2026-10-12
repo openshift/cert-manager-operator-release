@@ -46,6 +46,9 @@ entries:
 - name: cert-manager-operator.v1.18.1
   replaces: cert-manager-operator.v1.18.0
   skipRange: '>=1.18.0 <1.18.1'
+- name: cert-manager-operator.v1.18.2
+  replaces: cert-manager-operator.v1.18.1
+  skipRange: '>=1.18.1 <1.18.2'
 name: stable-v1.18
 package: openshift-cert-manager-operator
 schema: olm.channel
