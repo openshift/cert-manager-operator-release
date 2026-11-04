@@ -6,13 +6,16 @@ cert_manager_operator_submodule_branch = $(strip $(shell git config -f .gitmodul
 istio_csr_submodule_dir = cert-manager-istio-csr
 istio_csr_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.cert-manager-istio-csr.branch))
 trust_manager_submodule_dir = trust-manager
-trust_manager_submodule_tag = $(strip $(shell git config -f .gitmodules submodule.cert-manager-trust-manager.tag))
+trust_manager_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.cert-manager-trust-manager.branch))
+approver_policy_submodule_dir = cert-manager-approver-policy
+approver_policy_submodule_branch = $(strip $(shell git config -f .gitmodules submodule.cert-manager-approver-policy.branch))
 cert_manager_containerfile_name = Containerfile.cert-manager
 cert_manager_acmesolver_containerfile_name = Containerfile.cert-manager.acmesolver
 cert_manager_operator_containerfile_name = Containerfile.cert-manager-operator
 cert_manager_operator_bundle_containerfile_name = Containerfile.cert-manager-operator.bundle
 istio_csr_containerfile_name = Containerfile.cert-manager-istio-csr
 trust_manager_containerfile_name = Containerfile.cert-manager-trust-manager
+approver_policy_containerfile_name = Containerfile.cert-manager-approver-policy
 commit_sha = $(strip $(shell git rev-parse HEAD))
 source_url = $(strip $(shell git remote get-url origin))
 release_version = v$(strip $(shell git branch --show-current | cut -d'-' -f2))
@@ -27,8 +30,11 @@ endif
 ifeq ($(istio_csr_submodule_branch),)
 $(error istio_csr_submodule_branch is empty.)
 endif
-ifeq ($(trust_manager_submodule_tag),)
-$(error trust_manager_submodule_tag is empty.)
+ifeq ($(trust_manager_submodule_branch),)
+$(error trust_manager_submodule_branch is empty.)
+endif
+ifeq ($(approver_policy_submodule_branch),)
+$(error approver_policy_submodule_branch is empty.)
 endif
 
 ## container build tool to use for creating images.
@@ -52,8 +58,11 @@ ISTIO_CSR_IMAGE ?= cert-manager-istio-csr
 ## image for trust-manager
 TRUST_MANAGER_IMAGE ?= cert-manager-trust-manager
 
+## image for approver-policy
+APPROVER_POLICY_IMAGE ?= cert-manager-approver-policy
+
 ## image version tag for the all images created.
-IMAGE_VERSION ?= v1.20.1
+IMAGE_VERSION ?= v1.21.0
 
 ## args to pass during image build
 IMAGE_BUILD_ARGS ?= --build-arg RELEASE_VERSION=$(release_version) --build-arg COMMIT_SHA=$(commit_sha) --build-arg SOURCE_URL=$(source_url)
@@ -95,7 +104,8 @@ update-submodules:
 	git submodule foreach --recursive 'git fetch -t'
 	cd $(cert_manager_submodule_dir) && git checkout $(cert_manager_submodule_branch) && git pull origin $(cert_manager_submodule_branch) && cd - > /dev/null
 	cd $(istio_csr_submodule_dir) && git checkout $(istio_csr_submodule_branch) && git pull origin $(istio_csr_submodule_branch) && cd - > /dev/null
-	cd $(trust_manager_submodule_dir) && git checkout $(trust_manager_submodule_tag) && cd - > /dev/null
+	cd $(trust_manager_submodule_dir) && git checkout $(trust_manager_submodule_branch) && git pull origin $(trust_manager_submodule_branch) && cd - > /dev/null
+	cd $(approver_policy_submodule_dir) && git checkout $(approver_policy_submodule_branch) && git pull origin $(approver_policy_submodule_branch) && cd - > /dev/null
 	cd $(cert_manager_operator_submodule_dir) && git checkout $(cert_manager_operator_submodule_branch) && git pull origin $(cert_manager_operator_submodule_branch) && cd - > /dev/null
 
 ## build all the images - operator, operand and operator-bundle.
@@ -109,7 +119,7 @@ build-operator-image:
 
 ## build all operand images
 .PHONY: build-operand-images
-build-operand-images: build-cert-manager-image build-cert-manager-acmesolver-image build-istio-csr-image build-trust-manager-image
+build-operand-images: build-cert-manager-image build-cert-manager-acmesolver-image build-istio-csr-image build-trust-manager-image build-approver-policy-image
 
 ## build operator bundle image.
 .PHONY: build-bundle-image
@@ -135,6 +145,11 @@ build-istio-csr-image:
 .PHONY: build-trust-manager-image
 build-trust-manager-image:
 	$(IMAGE_BUILD_CMD) -f $(trust_manager_containerfile_name) -t $(TRUST_MANAGER_IMAGE):$(IMAGE_VERSION) .
+
+## build operand approver-policy image.
+.PHONY: build-approver-policy-image
+build-approver-policy-image:
+	$(IMAGE_BUILD_CMD) -f $(approver_policy_containerfile_name) -t $(APPROVER_POLICY_IMAGE):$(IMAGE_VERSION) .
 
 ## check shell scripts.
 .PHONY: verify-shell-scripts
@@ -162,7 +177,8 @@ $(CERT_MANAGER_IMAGE):$(IMAGE_VERSION) \
 $(CERT_MANAGER_ACMESOLVER_IMAGE):$(IMAGE_VERSION) \
 $(CERT_MANAGER_OPERATOR_BUNDLE_IMAGE):$(IMAGE_VERSION) \
 $(ISTIO_CSR_IMAGE):$(IMAGE_VERSION) \
-$(TRUST_MANAGER_IMAGE):$(IMAGE_VERSION)
+$(TRUST_MANAGER_IMAGE):$(IMAGE_VERSION) \
+$(APPROVER_POLICY_IMAGE):$(IMAGE_VERSION)
 
 ## validate renovate config.
 .PHONY: validate-renovate-config

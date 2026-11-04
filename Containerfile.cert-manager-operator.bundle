@@ -1,9 +1,6 @@
-FROM registry.access.redhat.com/ubi9/go-toolset:1.26.7-1791182877 AS builder
+FROM registry.redhat.io/openshift/golang-builder:golang-builder-v1.26-rhel9 AS builder
 
 WORKDIR /
-# rhel9/go-toolset runs as a non-root user by default; switch to root in this
-# builder stage so we can install tools and modify bundle manifests in place.
-USER 0
 
 COPY cert-manager-operator/bundle/manifests /manifests
 COPY cert-manager-operator/bundle/metadata /metadata
@@ -29,7 +26,7 @@ ARG SOURCE_URL
 
 # Core bundle labels.
 LABEL com.redhat.component="cert-manager-operator-bundle-container" \
-      cpe="cpe:/a:redhat:cert_manager:1.20::el9" \
+      cpe="cpe:/a:redhat:cert_manager:1.21::el9" \
       name="cert-manager/cert-manager-operator-bundle" \
       summary="Cert Manager support for OpenShift" \
       description="Cert Manager support for OpenShift" \
@@ -40,7 +37,7 @@ LABEL com.redhat.component="cert-manager-operator-bundle-container" \
       maintainer="Red Hat, Inc." \
       vendor="Red Hat, Inc." \
       com.redhat.delivery.operator.bundle=true \
-      com.redhat.openshift.versions="v4.19-v4.22" \
+      com.redhat.openshift.versions="v4.20-v5.1" \
       io.openshift.expose-services="" \
       io.openshift.build.commit.id="${COMMIT_SHA}" \
       io.openshift.build.source-location="${SOURCE_URL}" \
@@ -54,7 +51,7 @@ LABEL com.redhat.component="cert-manager-operator-bundle-container" \
       operators.operatorframework.io.bundle.metadata.v1=metadata/ \
       operators.operatorframework.io.bundle.package.v1="openshift-cert-manager-operator" \
       operators.operatorframework.io.bundle.channel.default.v1="stable-v1" \
-      operators.operatorframework.io.bundle.channels.v1="stable-v1,stable-v1.20" \
+      operators.operatorframework.io.bundle.channels.v1="stable-v1,stable-v1.21" \
       operators.operatorframework.io.metrics.builder="operator-sdk-v1.25.1" \
       operators.operatorframework.io.metrics.mediatype.v1="metrics+v1" \
       operators.operatorframework.io.metrics.project_layout="go.kubebuilder.io/v3"
