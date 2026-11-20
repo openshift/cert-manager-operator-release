@@ -1,5 +1,6 @@
 bin
 cert-manager/
+cert-manager-approver-policy/
 cert-manager-operator/
 cert-manager-istio-csr/
 trust-manager/
