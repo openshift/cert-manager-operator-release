@@ -11,37 +11,39 @@
 	"rebaseLabel": "needs-rebase",
 	"rebaseWhen": "behind-base-branch",
 	"recreateWhen": "always",
-	"packageRules": [
-		{
-			"description": "Update RHEL UBI base images monthly (fetch latest tag digest)",
-			"matchDatasources": ["docker"],
-			"matchPackageNames": ["registry.access.redhat.com/ubi9/ubi-minimal"],
-			"schedule": ["on the first day of the month"],
-			"pinDigests": true,
-			"matchCurrentValue": "latest",
-			"commitMessageTopic": "Updates RHEL UBI base image digest",
-			"prBodyNotes": [
-				"**Base Image Update Info:**",
-				"- Registry: `registry.access.redhat.com`",
-				"- Image: `ubi9/ubi-minimal`",
-				"- Tag: `latest`",
-				"- Previous digest: `{{currentDigestShort}}`",
-				"- New digest: `{{newDigestShort}}`",
-				""
-			]
-		}
-	],
+	"minimumReleaseAge": "7 days",
 	"tekton": {
 		"enabled": true,
 		"packageRules": [
 			{
-				"matchUpdateTypes": [
-					"minor", 
-					"patch", 
-					"pin", 
-					"digest"
+				"description": "Disable all Tekton updates by default",
+				"matchDatasources": ["docker"],
+				"enabled": false
+			},
+			{
+				"description": "Konflux Tekton catalog image updates only (tag + digest); majors/minors require human review",
+				"matchDatasources": ["docker"],
+				"matchPackageNames": [
+					"/^quay\\.io\\/konflux-ci\\/tekton-catalog\\//",
+					"/^quay\\.io\\/redhat-appstudio-tekton-catalog\\//"
 				],
-				"automerge": true
+				"matchUpdateTypes": ["major", "minor", "patch", "digest"],
+				"minimumReleaseAge": "7 days",
+				"enabled": true,
+				"automerge": false
+			},
+			{
+				"description": "Automerge only low-risk Tekton digest and patch image updates",
+				"matchDatasources": ["docker"],
+				"matchPackageNames": [
+					"/^quay\\.io\\/konflux-ci\\/tekton-catalog\\//",
+					"/^quay\\.io\\/redhat-appstudio-tekton-catalog\\//"
+				],
+				"matchUpdateTypes": ["digest", "patch"],
+				"minimumReleaseAge": "7 days",
+				"enabled": true,
+				"automerge": true,
+				"addLabels": ["approved", "lgtm"]
 			}
 		]
 	},
@@ -49,13 +51,23 @@
 		"enabled": true,
 		"packageRules": [
 			{
-				"matchFileNames": ["Containerfile.*"],
-				"automerge": true
+				"description": "Disable all Containerfile image updates by default",
+				"matchDatasources": ["docker"],
+				"enabled": false
+			},
+			{
+				"description": "Only digest updates for images already pinned with @sha256 (nothing else)",
+				"matchCurrentValue": "/@sha256:[a-f0-9]+$/i",
+				"matchUpdateTypes": ["digest"],
+				"minimumReleaseAge": "3 days",
+				"enabled": true,
+				"automerge": true,
+				"addLabels": ["approved", "lgtm"]
 			}
 		]
 	},
 	"git-submodules": {
-		"enabled": true
+		"enabled": false
 	},
 	"gomod": {
 		"enabled": false
