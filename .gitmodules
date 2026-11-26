@@ -5,7 +5,7 @@
 [submodule "cert-manager-operator"]
 	path = cert-manager-operator
 	url = https://github.com/openshift/cert-manager-operator.git
-	branch = master
+	branch = cert-manager-1.21
 [submodule "cert-manager-istio-csr"]
 	path = cert-manager-istio-csr
 	url = https://github.com/openshift/cert-manager-istio-csr.git
